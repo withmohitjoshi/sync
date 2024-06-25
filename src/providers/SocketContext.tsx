@@ -27,8 +27,9 @@ const SocketProvider = ({
         console.log("Socket Disconnected successfull");
       });
 
-      connection?.on("connect_error", () => {
+      connection?.on("connect_error", async () => {
         console.log("Socket got some error while connecting");
+        await fetch('/api/socket')
       });
     }
     return () => {
