@@ -14,6 +14,12 @@ const io = new Server(server, {
   },
 });
 
+app.get('/', (_req, res) => {
+  return res.json({
+    msg: 'Hello welcome',
+  });
+});
+
 io.on('connection', (socket) => {
   console.log('Client connected successfullu with sokcte id:', socket.id);
 
