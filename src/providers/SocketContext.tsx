@@ -1,7 +1,7 @@
-"use client";
-import React, { createContext, useEffect, useRef, useState } from "react";
-import { Socket } from "socket.io";
-import { io } from "socket.io-client";
+'use client';
+import React, { createContext, useEffect, useRef, useState } from 'react';
+import { Socket } from 'socket.io';
+import { io } from 'socket.io-client';
 
 const SocketContext = createContext<Socket | null>(null);
 
@@ -15,21 +15,22 @@ const SocketProvider = ({
 
   useEffect(() => {
     if (!isSocketConnect.current) {
-      const connection = io();
+      const connection = io({
+        reconnectionAttempts: 2,
+      });
       setSocket(connection as unknown as Socket);
       isSocketConnect.current = true;
 
-      connection?.on("connect", () => {
-        console.log("Socket Connected successfull");
+      connection?.on('connect', () => {
+        console.log('Socket Connected successfull');
       });
 
-      connection?.on("disconnect", () => {
-        console.log("Socket Disconnected successfull");
+      connection?.on('disconnect', () => {
+        console.log('Socket Disconnected successfull');
       });
 
-      connection?.on("connect_error", async () => {
-        console.log("Socket got some error while connecting");
-        await fetch('/api/socket')
+      connection?.on('connect_error', async () => {
+        console.log('Socket got some error while connecting');
       });
     }
     return () => {
@@ -39,9 +40,7 @@ const SocketProvider = ({
     };
   }, [socket]);
 
-  return (
-    <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
-  );
+  return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>;
 };
 
 export default SocketProvider;
