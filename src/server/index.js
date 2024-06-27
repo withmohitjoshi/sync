@@ -10,7 +10,7 @@ app.use(express.json());
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: [`${process.env.SITE_URL}:${process.env.SITE_PORT}`],
+    origin: [process.env.MODE === 'DEV' ? `${process.env.SITE_URL}:${process.env.SITE_PORT}` : `${process.env.SITE_URL}`],
   },
 });
 
