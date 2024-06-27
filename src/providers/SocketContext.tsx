@@ -1,7 +1,6 @@
 'use client';
 import React, { createContext, useEffect, useRef, useState } from 'react';
-import { Socket } from 'socket.io';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 
 const SocketContext = createContext<Socket | null>(null);
 
@@ -27,6 +26,10 @@ const SocketProvider = ({
 
       connection?.on('connect', () => {
         console.log('Socket Connected successfull');
+      });
+
+      connection?.emit('msg', {
+        msg: 'Mohit',
       });
 
       connection?.on('disconnect', () => {

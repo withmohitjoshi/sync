@@ -21,14 +21,17 @@ app.get('/', (_req, res) => {
 });
 
 io.on('connection', (socket) => {
-  console.log('Client connected successfullu with sokcte id:', socket.id);
+  console.log('Client connected successfully with sokcte id:', socket.id);
 
+  socket.on('msg', ({ msg }) => {
+    console.log({ msg });
+  });
   socket.on('disconnect', () => {
     console.log('Client disconnected');
   });
 });
 
-const port = process.env.SERVER_PORT || 3000;
+const port = process.env.SERVER_PORT;
 
 server.listen(port, () => {
   console.log(`Server listening on port ${port}`);
