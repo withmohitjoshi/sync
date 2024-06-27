@@ -1,23 +1,12 @@
-const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 require('dotenv').config();
 
-const app = express();
-
-app.use(express.json());
-
-const server = http.createServer(app);
-const io = new Server(server, {
+const httpServer = http.createServer();
+const io = new Server(httpServer, {
   cors: {
     origin: [process.env.MODE === 'DEV' ? `${process.env.SITE_URL}:${process.env.SITE_PORT}` : `${process.env.SITE_URL}`],
   },
-});
-
-app.get('/', (_req, res) => {
-  return res.json({
-    msg: 'Hello welcome',
-  });
 });
 
 io.on('connection', (socket) => {
@@ -26,6 +15,7 @@ io.on('connection', (socket) => {
   socket.on('msg', ({ msg }) => {
     console.log({ msg });
   });
+
   socket.on('disconnect', () => {
     console.log('Client disconnected');
   });
@@ -33,6 +23,6 @@ io.on('connection', (socket) => {
 
 const port = process.env.SERVER_PORT;
 
-server.listen(port, () => {
+httpServer.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });

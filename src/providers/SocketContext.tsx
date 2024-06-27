@@ -18,9 +18,10 @@ const SocketProvider = ({
   useEffect(() => {
     if (!isSocketConnect.current) {
       const connection = io(uri, {
-        reconnectionAttempts: 2,
+        reconnectionAttempts: 9999,
         transports: ['websocket'],
       });
+
       setSocket(connection as unknown as Socket);
       isSocketConnect.current = true;
 
@@ -39,6 +40,8 @@ const SocketProvider = ({
       connection?.on('connect_error', async () => {
         console.log('Socket got some error while connecting');
       });
+
+      connection.connect();
     }
     return () => {
       setSocket(null);
