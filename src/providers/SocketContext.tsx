@@ -7,16 +7,20 @@ const SocketContext = createContext<Socket | null>(null);
 
 const SocketProvider = ({
   children,
+  uri,
 }: Readonly<{
   children: React.ReactNode;
+  uri: string;
 }>) => {
+  console.log();
   const isSocketConnect = useRef(false);
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
     if (!isSocketConnect.current) {
-      const connection = io({
+      const connection = io(uri, {
         reconnectionAttempts: 2,
+        transports: ['websocket'],
       });
       setSocket(connection as unknown as Socket);
       isSocketConnect.current = true;
@@ -38,7 +42,7 @@ const SocketProvider = ({
       socket?.disconnect();
       socket?.removeAllListeners();
     };
-  }, [socket]);
+  }, [socket, uri]);
 
   return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>;
 };
