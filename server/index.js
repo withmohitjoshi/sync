@@ -12,10 +12,6 @@ const io = new Server(httpServer, {
 io.on('connection', (socket) => {
   console.log('Client connected successfully with sokcte id:', socket.id);
 
-  socket.on('msg', ({ msg }) => {
-    console.log({ msg });
-  });
-
   socket.on('disconnect', () => {
     console.log('Client disconnected');
   });

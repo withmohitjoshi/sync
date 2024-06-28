@@ -28,11 +28,7 @@ const SocketProvider = ({
       connection?.on('connect', () => {
         console.log('Socket Connected successfull');
       });
-
-      connection?.emit('msg', {
-        msg: 'Mohit',
-      });
-
+      
       connection?.on('disconnect', () => {
         console.log('Socket Disconnected successfull');
       });
