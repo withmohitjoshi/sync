@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "build": "yarn && webpack --config webpack.config.js --mode production",
+    "build": "yarn && yarn add webpack-cli && webpack --config webpack.config.js --mode production",
     "start": "nodemon ./build/main.js"
   },
   "keywords": [],
