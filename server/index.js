@@ -1,24 +1,32 @@
-const http = require('http');
-const { Server } = require('socket.io');
-require('dotenv').config();
+const express = require("express");
+const { createServer } = require("node:http");
+const { Server } = require("socket.io");
+require("dotenv").config();
 
-const httpServer = http.createServer();
-const io = new Server(httpServer, {
+const port = process.env.SERVER_PORT;
+
+const app = express();
+const server = createServer(app);
+const io = new Server(server, {
   cors: {
     origin: [process.env.MODE === 'DEV' ? `${process.env.SITE_URL}:${process.env.SITE_PORT}` : `${process.env.SITE_URL}`],
   },
 });
 
-io.on('connection', (socket) => {
-  console.log('Client connected successfully with sokcte id:', socket.id);
-
-  socket.on('disconnect', () => {
-    console.log('Client disconnected');
+app.get("/", (_, res) => {
+  res.json({
+    msg: "Hello world",
   });
 });
 
-const port = process.env.SERVER_PORT;
+io.on("connection", (socket) => {
+  console.log("Client connected successfully with socket id:", socket.id);
 
-httpServer.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});
+
+server.listen(port, () => {
+  console.log(`server running at port ${port}`);
 });
