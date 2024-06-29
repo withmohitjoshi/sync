@@ -7,13 +7,18 @@ export const metadata: Metadata = {
   description: "Get synced with you friends",
 };
 
-const uri = `${process.env.SERVER_URL}:${process.env.SERVER_PORT}`;
+const uri =
+  process.env.MODE === "DEV"
+    ? `${process.env.SERVER_URL}:${process.env.SERVER_PORT}`
+    : `${process.env.SERVER_URL}`;
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  console.log({ uri });
+
   return (
     <html lang="en">
       <body>
