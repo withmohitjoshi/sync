@@ -1,52 +1,55 @@
-'use client';
-import React, { createContext, useEffect, useRef, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
+"use client";
+import React, { createContext, useContext, useEffect, useRef } from "react";
+import { io, Socket } from "socket.io-client";
 
 const SocketContext = createContext<Socket | null>(null);
 
-const SocketProvider = ({
+export const useSocket = () => useContext(SocketContext);
+
+export const SocketProvider = ({
   children,
   uri,
 }: Readonly<{
   children: React.ReactNode;
   uri: string;
 }>) => {
-  console.log();
-  const isSocketConnect = useRef(false);
-  const [socket, setSocket] = useState<Socket | null>(null);
+  const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
-    if (!isSocketConnect.current) {
+    if (!socketRef.current) {
       const connection = io(uri, {
-        reconnectionAttempts: 9999,
-        transports: ['websocket'],
+        reconnection: false,
+        reconnectionAttempts: 5,
+        transports: ["websocket"],
       });
 
-      setSocket(connection as unknown as Socket);
-      isSocketConnect.current = true;
+      connection.on("connect", () =>
+        console.log("Socket Connected successfully")
+      );
 
-      connection?.on('connect', () => {
-        console.log('Socket Connected successfull');
-      });
-      
-      connection?.on('disconnect', () => {
-        console.log('Socket Disconnected successfull');
-      });
+      connection.on("disconnect", () =>
+        console.log("Socket Disconnected successfully")
+      );
 
-      connection?.on('connect_error', async () => {
-        console.log('Socket got some error while connecting');
-      });
+      connection.on("connect_error", async (error) =>
+        console.log("Socket got some error while connecting:", { error })
+      );
 
-      connection.connect();
+      socketRef.current = connection;
     }
+
     return () => {
-      setSocket(null);
-      socket?.disconnect();
-      socket?.removeAllListeners();
+      if (socketRef.current && socketRef.current.connected) {
+        socketRef.current.disconnect();
+        socketRef.current.removeAllListeners();
+        socketRef.current = null;
+      }
     };
-  }, [socket, uri]);
+  }, []);
 
-  return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>;
+  const socket = socketRef.current;
+
+  return (
+    <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
+  );
 };
-
-export default SocketProvider;
