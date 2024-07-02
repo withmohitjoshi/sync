@@ -1,4 +1,4 @@
-import { SignupFormInitialValuesT } from "./../../../signup/types";
+import bcrypt from "bcrypt";
 import { signupSchema } from "@/app/signup/constants";
 import { dbConnect } from "@/dbConfig/dbConnnect";
 import { STATUSCODES } from "@/helpers/enums";
@@ -37,7 +37,7 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
   const newUser = new User({
     email,
     username,
-    password,
+    password: await bcrypt.hash(password, 10),
   });
 
   newUser.save();
