@@ -1,20 +1,23 @@
-import { loginSchema } from '@/app/login/constants';
-import { NextRequest, NextResponse } from 'next/server';
+import { loginSchema } from "@/app/login/constants";
+import { STATUSCODES } from "@/helpers/enums";
+import { parseBody, throwNewError } from "@/helpers/functions";
+import { apiAsyncHandler } from "@/lib/apiAsyncHandler";
+import { NextRequest, NextResponse } from "next/server";
 
-export const POST = async (req: NextRequest) => {
-  const body = await req.json();
+export const POST = apiAsyncHandler(async (req: NextRequest) => {
+  const body = await parseBody(req);
 
-  const { success, data, error } = loginSchema.safeParse(body, {});
+  const { success, data } = loginSchema.safeParse(body);
 
   if (!success) {
-    return NextResponse.json({
-      status: 400,
-      error: error.flatten(),
+    throwNewError({
+      status: STATUSCODES.BAD_REQUEST,
+      error: "Invalid Payload",
     });
   }
 
   return NextResponse.json({
-    msg: 'Validation passed',
+    msg: "Validation passed",
     data,
   });
-};
+});
