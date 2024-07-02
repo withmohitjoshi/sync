@@ -1,7 +1,7 @@
-import axios from 'axios';
+import axios from "axios";
 
 export const apiClient = axios.create({
-  baseURL: '/api',
+  baseURL: "/api",
 });
 
 apiClient.interceptors.request.use(
@@ -18,6 +18,6 @@ apiClient.interceptors.response.use(
     return response;
   },
   function (error) {
-    return Promise.reject(error);
+    return error;
   }
 );

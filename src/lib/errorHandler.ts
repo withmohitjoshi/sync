@@ -10,6 +10,13 @@ export const errorHandler = ({ error, status, data }: any) => {
         message: error,
         data,
       });
+    case STATUSCODES.CONFLICT:
+      return sendResponse({
+        title: "Duplicated found",
+        status,
+        message: error,
+        data,
+      });
     case STATUSCODES.UNAUTHORIZED:
       return sendResponse({
         title: "Unauthorized",
