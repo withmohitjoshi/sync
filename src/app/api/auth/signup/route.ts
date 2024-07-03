@@ -1,11 +1,18 @@
-import bcrypt from 'bcrypt';
-import { signupSchema } from '@/app/signup/constants';
-import { dbConnect } from '@/dbConfig/dbConnnect';
-import { STATUSCODES } from '@/helpers/enums';
-import { parseBody, sendResponse, throwNewError } from '@/helpers/functions';
-import { apiAsyncHandler } from '@/lib/apiAsyncHandler';
-import User from '@/models/User';
-import { NextRequest } from 'next/server';
+import bcrypt from "bcrypt";
+import { signupSchema } from "@/app/signup/constants";
+import { dbConnect } from "@/dbConfig/dbConnnect";
+import { STATUSCODES } from "@/helpers/enums";
+import {
+  generateOTP,
+  parseBody,
+  sendEmail,
+  sendResponse,
+  throwNewError,
+} from "@/helpers/functions";
+import { apiAsyncHandler } from "@/lib/apiAsyncHandler";
+import User from "@/models/User";
+import { NextRequest } from "next/server";
+import VerifyEmailOTPTemplate from "@/emails/VerifyEmailOTPTemplate";
 
 dbConnect();
 
@@ -14,10 +21,31 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
 
   const { success, data } = signupSchema.safeParse(body);
 
+  const otp = generateOTP();
+
+  return sendEmail({
+    to: data?.email,
+    subject: "Email Verification",
+    template: VerifyEmailOTPTemplate({ username: body?.username, otp }),
+    onError(error) {
+      throwNewError({
+        status: STATUSCODES.BAD_REQUEST,
+        error: error?.message,
+      });
+    },
+    onSuccess(data) {
+      return sendResponse({
+        status: 200,
+        message: "Email send Successfully",
+        data,
+      });
+    },
+  });
+
   if (!success) {
     throwNewError({
       status: STATUSCODES.BAD_REQUEST,
-      error: 'Invalid Payload',
+      error: "Invalid Payload",
     });
   }
 
@@ -33,7 +61,7 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
   ]);
 
   if (isEmailInUse || isUsernameInUse) {
-    const error = isEmailInUse ? 'Email already used' : 'Username already used';
+    const error = isEmailInUse ? "Email already used" : "Username already used";
     throwNewError({
       status: STATUSCODES.CONFLICT,
       error,
@@ -50,6 +78,6 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
 
   return sendResponse({
     status: 200,
-    message: 'Registration Successfully',
+    message: "Registration Successfully",
   });
 });
