@@ -1,11 +1,11 @@
-import bcrypt from "bcrypt";
-import { signupSchema } from "@/app/signup/constants";
-import { dbConnect } from "@/dbConfig/dbConnnect";
-import { STATUSCODES } from "@/helpers/enums";
-import { parseBody, sendResponse, throwNewError } from "@/helpers/functions";
-import { apiAsyncHandler } from "@/lib/apiAsyncHandler";
-import User from "@/models/User";
-import { NextRequest } from "next/server";
+import bcrypt from 'bcrypt';
+import { signupSchema } from '@/app/signup/constants';
+import { dbConnect } from '@/dbConfig/dbConnnect';
+import { STATUSCODES } from '@/helpers/enums';
+import { parseBody, sendResponse, throwNewError } from '@/helpers/functions';
+import { apiAsyncHandler } from '@/lib/apiAsyncHandler';
+import User from '@/models/User';
+import { NextRequest } from 'next/server';
 
 dbConnect();
 
@@ -17,20 +17,26 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
   if (!success) {
     throwNewError({
       status: STATUSCODES.BAD_REQUEST,
-      error: "Invalid Payload",
+      error: 'Invalid Payload',
     });
   }
 
   const { email, username, password } = data!;
 
-  const isUserExists = await User.findOne({
-    $or: [{ email }, { username }],
-  });
+  const [isEmailInUse, isUsernameInUse] = await Promise.all([
+    User.findOne({
+      email,
+    }),
+    User.findOne({
+      username,
+    }),
+  ]);
 
-  if (isUserExists) {
+  if (isEmailInUse || isUsernameInUse) {
+    const error = isEmailInUse ? 'Email already used' : 'Username already used';
     throwNewError({
       status: STATUSCODES.CONFLICT,
-      error: "User already exists with these credentials",
+      error,
     });
   }
 
@@ -44,6 +50,6 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
 
   return sendResponse({
     status: 200,
-    message: "Registration Successfully",
+    message: 'Registration Successfully',
   });
 });

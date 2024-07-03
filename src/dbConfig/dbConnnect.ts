@@ -16,7 +16,9 @@ export const dbConnect = async (): Promise<void> => {
       console.log('Database uri not found');
       process.exit(1);
     }
-    const db = await mongoose.connect(process.env.MONGO_URI);
+    const db = await mongoose.connect(process.env.MONGO_URI, {
+      dbName: 'sync',
+    });
     connection.isConnected = db.connections[0].readyState;
     console.log('Successfully Connected to Database');
   } catch (error) {
