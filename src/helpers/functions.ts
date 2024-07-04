@@ -1,14 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import { SendEmailT, SendResponseT } from "./types";
-import { resend } from "@/lib/resend";
-import VerifyEmailOTPTemplate from "@/emails/VerifyEmailOTPTemplate";
+import { NextRequest, NextResponse } from 'next/server';
+import { SendEmailT, SendResponseT } from './types';
+import { resend } from '@/lib/resend';
+import VerifyEmailOTPTemplate from '@/emails/VerifyEmailOTPTemplate';
 
-export const sendResponse = ({
-  title,
-  data,
-  status,
-  message,
-}: SendResponseT) => {
+export const sendResponse = ({ title, data, status, message }: SendResponseT) => {
   return NextResponse.json(
     {
       status,
@@ -59,33 +54,11 @@ export const generateOTP = (length = 6) => {
   return otp.toString();
 };
 
-export const sendEmail = async ({
-  to = "andromj4@gmail.com",
-  subject,
-  template,
-  onError,
-  onSuccess,
-}: SendEmailT) => {
-  try {
-    const { data, error } = await resend.emails.send({
-      from: process.env.RESEND_DOMAIN!,
-      to,
-      subject,
-      react: template,
-    });
-
-    if (error) {
-      return onError(error);
-    }
-
-    return onSuccess(data);
-  } catch (error) {
-    console.log({ error });
-
-    return sendResponse({
-      status: 500,
-      message: "Got some error while sending mail",
-      data: error,
-    });
-  }
+export const sendEmail = async ({ to, subject, template }: SendEmailT) => {
+  return resend.emails.send({
+    from: process.env.RESEND_DOMAIN!,
+    to,
+    subject,
+    react: template,
+  });
 };

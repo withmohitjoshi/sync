@@ -1,18 +1,11 @@
-import bcrypt from "bcrypt";
-import { signupSchema } from "@/app/signup/constants";
-import { dbConnect } from "@/dbConfig/dbConnnect";
-import { STATUSCODES } from "@/helpers/enums";
-import {
-  generateOTP,
-  parseBody,
-  sendEmail,
-  sendResponse,
-  throwNewError,
-} from "@/helpers/functions";
-import { apiAsyncHandler } from "@/lib/apiAsyncHandler";
-import User from "@/models/User";
-import { NextRequest } from "next/server";
-import VerifyEmailOTPTemplate from "@/emails/VerifyEmailOTPTemplate";
+import bcrypt from 'bcrypt';
+import { signupSchema } from '@/app/signup/constants';
+import { dbConnect } from '@/dbConfig/dbConnnect';
+import { STATUSCODES } from '@/helpers/enums';
+import { generateOTP, parseBody, sendEmail, sendResponse, throwNewError } from '@/helpers/functions';
+import { apiAsyncHandler } from '@/lib/apiAsyncHandler';
+import User from '@/models/User';
+import { NextRequest, NextResponse } from 'next/server';
 
 dbConnect();
 
@@ -21,31 +14,10 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
 
   const { success, data } = signupSchema.safeParse(body);
 
-  const otp = generateOTP();
-
-  return sendEmail({
-    to: data?.email,
-    subject: "Email Verification",
-    template: VerifyEmailOTPTemplate({ username: body?.username, otp }),
-    onError(error) {
-      throwNewError({
-        status: STATUSCODES.BAD_REQUEST,
-        error: error?.message,
-      });
-    },
-    onSuccess(data) {
-      return sendResponse({
-        status: 200,
-        message: "Email send Successfully",
-        data,
-      });
-    },
-  });
-
   if (!success) {
     throwNewError({
       status: STATUSCODES.BAD_REQUEST,
-      error: "Invalid Payload",
+      error: 'Invalid Payload',
     });
   }
 
@@ -61,23 +33,46 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
   ]);
 
   if (isEmailInUse || isUsernameInUse) {
-    const error = isEmailInUse ? "Email already used" : "Username already used";
+    const error = isEmailInUse ? 'Email already used' : 'Username already used';
     throwNewError({
       status: STATUSCODES.CONFLICT,
       error,
     });
   }
 
+  const otp = generateOTP();
+  const verifyCodeExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
   const newUser = new User({
     email,
     username,
     password: await bcrypt.hash(password, 10),
+    verifyCode: otp,
+    verifyCodeExpiry,
   });
 
-  newUser.save();
+  try {
+    // await newUser.save();
+    // await sendEmail({
+    //   to: email,
+    //   subject: 'Email Verification',
+    //   template: VerifyEmailOTPTemplate({ username: username, otp }),
+    // });
 
-  return sendResponse({
-    status: 200,
-    message: "Registration Successfully",
-  });
+    return sendResponse({
+      status: 200,
+      message: `Registration Successfully, please check ${email} to verfiy`,
+    });
+  } catch (error) {
+    console.error('Error while sending mail or saving new user:', { error });
+    const isUserGetCreatedInDB = await User.findOne({ email });
+    if (isUserGetCreatedInDB) {
+      User.deleteOne({ email });
+    } else {
+      throwNewError({
+        status: STATUSCODES.SERVER_ERROR,
+        error: `Account not created yet, Something went wrong while sending verification mail`,
+      });
+    }
+  }
 });

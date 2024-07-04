@@ -1,5 +1,5 @@
-import { ErrorResponse } from "resend";
-import { STATUSCODES } from "./enums";
+import { ErrorResponse } from 'resend';
+import { STATUSCODES } from './enums';
 
 export type SendResponseT = {
   title?: string;
@@ -9,9 +9,7 @@ export type SendResponseT = {
 };
 
 export type SendEmailT = {
-  to?: string | string[];
+  to: string | string[];
   subject: string;
   template: JSX.Element;
-  onError: (error: ErrorResponse | null) => void;
-  onSuccess: (data: any) => void;
 };
