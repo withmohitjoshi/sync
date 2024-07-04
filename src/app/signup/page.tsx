@@ -19,7 +19,7 @@ const SignupPage = () => {
   const onSubmit: SubmitHandler<SignupFormInitialValuesT> = async (
     data: SignupFormInitialValuesT
   ) => {
-    await apiClient({
+    const res = await apiClient({
       method: "POST",
       url: "auth/signup",
       data,
