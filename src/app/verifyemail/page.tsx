@@ -7,6 +7,7 @@ import { VerifyEmailFormInitialValuesT } from './types';
 import { apiClient } from '@/lib/interceptor';
 import { useRouter } from 'next/navigation';
 import { AppRouterPagePropsT } from '@/helpers/types';
+import { resendEmail } from './actions';
 
 const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
   const router = useRouter();
@@ -41,8 +42,11 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
       <input {...register('code')} type='text' />
       <button
         type='button'
-        onClick={() => {
-          console.log('hello');
+        onClick={async () => {
+          if (searchParams?.token) {
+            const _response = await resendEmail(searchParams?.token);
+            console.log('🚀 ~ onClick={ ~ _response:', _response);
+          }
         }}
       >
         Resend Email
