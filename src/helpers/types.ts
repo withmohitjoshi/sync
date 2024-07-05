@@ -13,3 +13,8 @@ export type SendEmailT = {
   subject: string;
   template: JSX.Element;
 };
+
+export type AppRouterPagePropsT = {
+  params?: any;
+  searchParams?: any;
+};
