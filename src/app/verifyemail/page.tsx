@@ -42,9 +42,6 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
   }, [isResendEmailDisabled]);
 
   const onSubmit: SubmitHandler<VerifyEmailFormInitialValuesT> = async (data: VerifyEmailFormInitialValuesT) => {
-    alert('On submit get trigged');
-    console.log({ searchParams });
-
     if (searchParams?.token) {
       const response = await apiClient({
         headers: {
@@ -57,15 +54,12 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
       if (response.status === 200) {
         router.push('/login');
       }
-    } else {
-      alert('On submit get trigged in else');
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <label>Code</label>
-      <div>{JSON.stringify(searchParams)}</div>
       <input {...register('code')} type='text' />
       <button
         disabled={isResendEmailDisabled}
