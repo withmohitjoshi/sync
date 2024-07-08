@@ -55,6 +55,8 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
       if (response.status === 200) {
         router.push('/login');
       }
+    } else {
+      alert('On submit get trigged in else');
     }
   };
 
