@@ -5,8 +5,10 @@ import { initialValues, loginSchema } from "./constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginFormInitialValuesT } from "./types";
 import { apiClient } from "@/lib/interceptor";
+import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -19,11 +21,15 @@ const LoginPage = () => {
   const onSubmit: SubmitHandler<LoginFormInitialValuesT> = async (
     data: LoginFormInitialValuesT
   ) => {
-    await apiClient({
+    const response = await apiClient({
       method: "POST",
       url: "auth/login",
       data,
     });
+    const token = response?.data?.data?.token;
+    if (token) {
+      router.push(`/verify-email?token=${token}`);
+    }
   };
 
   return (
@@ -32,7 +38,9 @@ const LoginPage = () => {
       <input {...register("email")} type="email" />
       <label>Password</label>
       <input {...register("password")} type="password" />
-      <button type="submit" disabled={!isValid}>Submit</button>
+      <button type="submit" disabled={!isValid}>
+        Submit
+      </button>
     </form>
   );
 };
