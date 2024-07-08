@@ -25,7 +25,7 @@ const SignupPage = () => {
     });
     const token = response.data?.data?.token;
     if (token) {
-      router.push(`/verifyemail?token=${token}`);
+      router.push(`/verify-email?token=${token}`);
     }
   };
 
