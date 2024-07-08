@@ -63,6 +63,7 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <label>Code</label>
+      <div>{JSON.stringify(searchParams)}</div>
       <input {...register('code')} type='text' />
       <button
         disabled={isResendEmailDisabled}
