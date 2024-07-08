@@ -43,6 +43,8 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
 
   const onSubmit: SubmitHandler<VerifyEmailFormInitialValuesT> = async (data: VerifyEmailFormInitialValuesT) => {
     alert('On submit get trigged');
+    console.log({ searchParams });
+
     if (searchParams?.token) {
       const response = await apiClient({
         headers: {
