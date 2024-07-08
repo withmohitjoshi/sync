@@ -12,8 +12,6 @@ import { resendEmail } from "./actions";
 let id: NodeJS.Timeout;
 const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
   const token = searchParams?.token || "";
-  console.log({ token });
-
   const [isResendEmailDisabled, setIsResendEmailDisabled] = useState(true);
   const router = useRouter();
   const {
@@ -43,10 +41,6 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
       clearInterval(id);
     };
   }, [isResendEmailDisabled]);
-
-  useEffect(() => {
-    console.log({ token });
-  }, [token]);
 
   const onSubmit = async (data: VerifyEmailFormInitialValuesT) => {
     if (token) {
