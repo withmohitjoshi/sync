@@ -41,7 +41,9 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
     };
   }, [isResendEmailDisabled]);
 
-  const onSubmit: SubmitHandler<VerifyEmailFormInitialValuesT> = async (data: VerifyEmailFormInitialValuesT) => {
+  const onSubmit = async (data: VerifyEmailFormInitialValuesT) => {
+    console.log(searchParams);
+
     if (searchParams?.token) {
       const response = await apiClient({
         headers: {
