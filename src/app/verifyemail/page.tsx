@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { initialValues, verifyEmailSchema } from './constants';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,6 +11,7 @@ import { resendEmail } from './actions';
 
 let id: NodeJS.Timeout;
 const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
+  console.log('🚀 ~ VerifyEmailPage ~ searchParams:', searchParams);
   const [isResendEmailDisabled, setIsResendEmailDisabled] = useState(true);
   const router = useRouter();
   const {
@@ -41,23 +42,28 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
     };
   }, [isResendEmailDisabled]);
 
-  const onSubmit = async (data: VerifyEmailFormInitialValuesT) => {
-    console.log(searchParams);
+  const onSubmit = useCallback(
+    async (data: VerifyEmailFormInitialValuesT) => {
+      console.log(searchParams);
 
-    if (searchParams?.token) {
-      const response = await apiClient({
-        headers: {
-          Authorization: `Bearer ${searchParams.token}`,
-        },
-        method: 'POST',
-        url: 'auth/verify-email',
-        data,
-      });
-      if (response.status === 200) {
-        router.push('/login');
+      if (searchParams?.token) {
+        const response = await apiClient({
+          headers: {
+            Authorization: `Bearer ${searchParams.token}`,
+          },
+          method: 'POST',
+          url: 'auth/verify-email',
+          data,
+        });
+        if (response.status === 200) {
+          router.push('/login');
+        }
       }
-    }
-  };
+    },
+    [router, searchParams]
+  );
+
+  console.log('re rednering', { searchParams });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
