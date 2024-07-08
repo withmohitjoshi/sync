@@ -50,7 +50,7 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
 
     if (user?.isVerified) {
       return sendResponse({
-        status: 401,
+        status: 410,
         message: 'link is expired',
       });
     }

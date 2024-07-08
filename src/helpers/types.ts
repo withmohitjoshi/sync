@@ -3,7 +3,7 @@ import { STATUSCODES } from './enums';
 
 export type SendResponseT = {
   title?: string;
-  status: STATUSCODES;
+  status: STATUSCODES | number;
   data?: unknown;
   message?: string;
 };

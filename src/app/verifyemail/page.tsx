@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { initialValues, verifyEmailSchema } from './constants';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,7 +9,9 @@ import { useRouter } from 'next/navigation';
 import { AppRouterPagePropsT } from '@/helpers/types';
 import { resendEmail } from './actions';
 
+let id: NodeJS.Timeout;
 const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
+  const [isResendEmailDisabled, setIsResendEmailDisabled] = useState(true);
   const router = useRouter();
   const {
     register,
@@ -19,6 +21,25 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
     defaultValues: initialValues,
     resolver: zodResolver(verifyEmailSchema),
   });
+
+  useEffect(() => {
+    if (isResendEmailDisabled) {
+      id = setInterval(() => {
+        const timer = document.getElementById('timer');
+        if (timer && timer.textContent) {
+          const timeLeft = parseInt(timer.textContent);
+          if (timeLeft <= 0) {
+            setIsResendEmailDisabled(false);
+          } else {
+            timer.textContent = String(timeLeft - 1);
+          }
+        }
+      }, 1000);
+    }
+    return () => {
+      clearInterval(id);
+    };
+  }, [isResendEmailDisabled]);
 
   const onSubmit: SubmitHandler<VerifyEmailFormInitialValuesT> = async (data: VerifyEmailFormInitialValuesT) => {
     if (searchParams?.token) {
@@ -41,16 +62,31 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
       <label>Code</label>
       <input {...register('code')} type='text' />
       <button
+        disabled={isResendEmailDisabled}
         type='button'
         onClick={async () => {
-          if (searchParams?.token) {
-            const _response = await resendEmail(searchParams?.token);
-            console.log('🚀 ~ onClick={ ~ _response:', _response);
+          if (isResendEmailDisabled === false) {
+            setIsResendEmailDisabled(true);
+            const timer = document.getElementById('timer');
+            if (timer) {
+              timer.textContent = '60';
+            }
+
+            if (searchParams?.token) {
+              const resp = await resendEmail(searchParams?.token);
+              if (resp.status === 200) {
+                router.push(`/verifyemail?token=${resp?.data?.token}`);
+              } else {
+                setIsResendEmailDisabled(false);
+                console.error({ resp });
+              }
+            }
           }
         }}
       >
         Resend Email
       </button>
+      <p id='timer'>60</p>s
       <button type='submit' disabled={!isValid}>
         Submit
       </button>
