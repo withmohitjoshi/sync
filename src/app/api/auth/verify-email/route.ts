@@ -65,6 +65,12 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
       });
       return sendResponse({
         status: 200,
+        message: `${user.email} is verified`,
+      });
+    } else {
+      return sendResponse({
+        status: STATUSCODES.UNAUTHORIZED,
+        message: 'wrong code',
       });
     }
   } catch (error: any) {

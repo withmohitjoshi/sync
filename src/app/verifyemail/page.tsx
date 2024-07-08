@@ -42,6 +42,7 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
   }, [isResendEmailDisabled]);
 
   const onSubmit: SubmitHandler<VerifyEmailFormInitialValuesT> = async (data: VerifyEmailFormInitialValuesT) => {
+    alert('On submit get trigged');
     if (searchParams?.token) {
       const response = await apiClient({
         headers: {
@@ -66,13 +67,12 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
         type='button'
         onClick={async () => {
           if (isResendEmailDisabled === false) {
-            setIsResendEmailDisabled(true);
-            const timer = document.getElementById('timer');
-            if (timer) {
-              timer.textContent = '60';
-            }
-
             if (searchParams?.token) {
+              setIsResendEmailDisabled(true);
+              const timer = document.getElementById('timer');
+              if (timer) {
+                timer.textContent = '60';
+              }
               const resp = await resendEmail(searchParams?.token);
               if (resp.status === 200) {
                 router.push(`/verifyemail?token=${resp?.data?.token}`);
@@ -86,7 +86,10 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
       >
         Resend Email
       </button>
-      <p id='timer'>60</p>s
+      <div>
+        <p id='timer'>60</p>
+        <span>s</span>
+      </div>
       <button type='submit' disabled={!isValid}>
         Submit
       </button>
