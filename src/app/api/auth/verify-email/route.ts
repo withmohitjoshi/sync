@@ -13,6 +13,14 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
 
   token = token?.split(' ')?.[1] ?? null;
 
+  if (!token) {
+    throwNewError({
+      status: STATUSCODES.UNAUTHORIZED,
+      error: 'Invalid or broken link',
+    });
+    return;
+  }
+
   const body = await parseBody(req);
 
   const { success, data } = verifyEmailSchema.safeParse(body);
@@ -25,11 +33,6 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
   }
 
   const { code } = data!;
-
-  if (!token) {
-    brokenLink(STATUSCODES.UNAUTHORIZED);
-    return;
-  }
 
   try {
     const { id } = await decrypt(token);
@@ -47,8 +50,8 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
 
     if (user?.isVerified) {
       return sendResponse({
-        status: STATUSCODES.FORBIDDEN,
-        message: 'Invalid or broken link',
+        status: 401,
+        message: 'link is expired',
       });
     }
 
@@ -65,15 +68,9 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
       });
     }
   } catch (error: any) {
-    if (error.name === 'JWTExpired') {
-      brokenLink(STATUSCODES.UNAUTHORIZED);
-    }
+    throwNewError({
+      status: STATUSCODES.UNAUTHORIZED,
+      error: 'Invalid or broken link',
+    });
   }
 });
-
-const brokenLink = (status: STATUSCODES) => {
-  throwNewError({
-    status,
-    error: 'Invalid or broken link',
-  });
-};
