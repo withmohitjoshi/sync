@@ -1,7 +1,8 @@
-import axios from "axios";
+import axios from 'axios';
+import { redirect } from 'next/navigation';
 
 export const apiClient = axios.create({
-  baseURL: "/api",
+  baseURL: '/api',
 });
 
 apiClient.interceptors.request.use(
@@ -18,6 +19,9 @@ apiClient.interceptors.response.use(
     return response;
   },
   function (error) {
+    if (error.response && error.response.status === 401) {
+      redirect('/login');
+    }
     return error;
   }
 );

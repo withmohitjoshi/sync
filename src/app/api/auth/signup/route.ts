@@ -54,11 +54,11 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
 
   try {
     const user = await newUser.save();
-    await sendEmail({
-      to: email,
-      subject: 'Email Verification',
-      template: VerifyEmailOTPTemplate({ username: username, otp }),
-    });
+    // await sendEmail({
+    //   to: email,
+    //   subject: 'Email Verification',
+    //   template: VerifyEmailOTPTemplate({ username: username, otp }),
+    // });
 
     const verifyEmailToken = await encrypt(verifyCodeExpiry, {
       id: encodeUserId(user.id),

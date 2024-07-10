@@ -78,7 +78,7 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
       });
     }
   } else {
-    const expiresIn = createDateTime({ seconds: 30 });
+    const expiresIn = createDateTime({ minutes: 30 });
 
     const token = await encrypt(expiresIn, {
       id: encodeUserId(user.id),

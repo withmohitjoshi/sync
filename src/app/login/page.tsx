@@ -27,6 +27,8 @@ const LoginPage = () => {
     const token = response?.data?.data?.token;
     if (token) {
       router.push(`/verify-email?token=${token}`);
+    } else {
+      router.replace(`/`);
     }
   };
 
