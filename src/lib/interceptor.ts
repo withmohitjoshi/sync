@@ -1,17 +1,8 @@
 import axios from "axios";
 import { redirect } from "next/navigation";
 
-const baseURL =
-  process.env.MODE === "DEV"
-    ? `${process.env.SITE_URL}:${process.env.SITE_PORT}`
-    : `${process.env.SITE_URL}`;
-
-
-    console.log(baseURL,'-----------------------------------');
-    
-
 export const apiClient = axios.create({
-  baseURL: `${baseURL}/api/`,
+  baseURL: `${process.env.NEXT_PUBLIC_SITE_BASEURL}/api/`,
 });
 
 apiClient.interceptors.request.use(
@@ -28,9 +19,9 @@ apiClient.interceptors.response.use(
     return response;
   },
   function (error) {
-    if (error.response && error.response.status === 401) {
-      redirect("/login");
-    }
+    // if (error.response && error.response.status === 401) {
+    //   redirect("/login");
+    // }
     return error;
   }
 );

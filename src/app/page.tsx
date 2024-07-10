@@ -1,14 +1,7 @@
-import { apiClient } from "@/lib/interceptor";
-
-export default async function Home() {
-  const data = await apiClient({
-    method: "GET",
-    url: "user/get-user",
-  });
+export default async function HomePage() {
   return (
     <div>
-      HomePage
-      {JSON.stringify(data.data)}
+      HomePagex
     </div>
   );
 }

@@ -7,10 +7,7 @@ export const metadata: Metadata = {
   description: "Get synced with you friends",
 };
 
-const uri =
-  process.env.MODE === "DEV"
-    ? `${process.env.SERVER_URL}:${process.env.SERVER_PORT}`
-    : `${process.env.SERVER_URL}`;
+const uri = `${process.env.NEXT_PUBLIC_SERVER_BASEURL}`;
 
 export default function RootLayout({
   children,
