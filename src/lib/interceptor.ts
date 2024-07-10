@@ -6,6 +6,10 @@ const baseURL =
     ? `${process.env.SITE_URL}:${process.env.SITE_PORT}`
     : `${process.env.SITE_URL}`;
 
+
+    console.log(baseURL,'-----------------------------------');
+    
+
 export const apiClient = axios.create({
   baseURL: `${baseURL}/api/`,
 });
