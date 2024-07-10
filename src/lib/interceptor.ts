@@ -1,9 +1,10 @@
 import axios from "axios";
 import { redirect } from "next/navigation";
 
-const baseURL = process.env.SITE_PORT
-  ? `${process.env.SITE_URL}:${process.env.SITE_PORT}`
-  : `${process.env.SITE_URL}`;
+const baseURL =
+  process.env.MODE === "DEV"
+    ? `${process.env.SITE_URL}:${process.env.SITE_PORT}`
+    : `${process.env.SITE_URL}`;
 
 export const apiClient = axios.create({
   baseURL: `${baseURL}/api/`,
@@ -24,7 +25,7 @@ apiClient.interceptors.response.use(
   },
   function (error) {
     if (error.response && error.response.status === 401) {
-      redirect('/login');
+      redirect("/login");
     }
     return error;
   }
