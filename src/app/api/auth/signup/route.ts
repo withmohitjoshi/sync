@@ -2,11 +2,11 @@ import bcrypt from 'bcrypt';
 import { signupSchema } from '@/app/signup/constants';
 import { dbConnect } from '@/dbConfig/dbConnnect';
 import { STATUSCODES } from '@/helpers/enums';
-import { generateOTP, parseBody, sendEmail, sendResponse, throwNewError } from '@/helpers/functions';
+import { createDateTime, generateOTP, parseBody, sendEmail, sendResponse, throwNewError } from '@/helpers/functions';
 import { apiAsyncHandler } from '@/lib/apiAsyncHandler';
 import User from '@/models/User';
 import { NextRequest } from 'next/server';
-import { encrypt } from '@/lib/jwt';
+import { encodeUserId, encrypt } from '@/lib/jwt';
 import VerifyEmailOTPTemplate from '@/emails/VerifyEmailOTPTemplate';
 
 dbConnect();
@@ -42,7 +42,7 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
   }
 
   const otp = generateOTP();
-  const verifyCodeExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+  const verifyCodeExpiry = createDateTime({ minutes: 10 });
 
   const newUser = new User({
     email,
@@ -60,10 +60,8 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
       template: VerifyEmailOTPTemplate({ username: username, otp }),
     });
 
-    const encodedUserId = new TextEncoder().encode(user.id);
-
     const verifyEmailToken = await encrypt(verifyCodeExpiry, {
-      id: Array.from(encodedUserId),
+      id: encodeUserId(user.id),
       expiresIn: verifyCodeExpiry,
     });
 

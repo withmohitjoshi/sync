@@ -14,3 +14,13 @@ export const decrypt = async (input: string): Promise<any> => {
   });
   return payload;
 };
+
+export const encodeUserId = (userId: string) => {
+  const encodedUserId = new TextEncoder().encode(userId);
+  return Array.from(encodedUserId);
+};
+
+export const decodeUserId = (id: string[]) => {
+  const bytes = new Uint8Array(id.map((d: string) => parseInt(d, 10)));
+  return new TextDecoder().decode(bytes);
+};

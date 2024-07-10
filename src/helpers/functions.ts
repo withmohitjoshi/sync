@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { SendEmailT, SendResponseT } from './types';
+import { CreateDateTimeT, SendEmailT, SendResponseT } from './types';
 import { resend } from '@/lib/resend';
 import VerifyEmailOTPTemplate from '@/emails/VerifyEmailOTPTemplate';
 
@@ -61,4 +61,13 @@ export const sendEmail = async ({ to, subject, template }: SendEmailT) => {
     subject,
     react: template,
   });
+};
+
+export const createDateTime = ({ seconds = 0, minutes = 0, hours = 0, days = 0 }: CreateDateTimeT) => {
+  const now = new Date();
+  now.setSeconds(now.getSeconds() + seconds);
+  now.setMinutes(now.getMinutes() + minutes);
+  now.setHours(now.getHours() + hours);
+  now.setDate(now.getDate() + days);
+  return now;
 };

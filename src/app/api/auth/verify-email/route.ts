@@ -3,7 +3,7 @@ import { dbConnect } from '@/dbConfig/dbConnnect';
 import { STATUSCODES } from '@/helpers/enums';
 import { parseBody, sendResponse, throwNewError } from '@/helpers/functions';
 import { apiAsyncHandler } from '@/lib/apiAsyncHandler';
-import { decrypt } from '@/lib/jwt';
+import { decodeUserId, decrypt } from '@/lib/jwt';
 import User from '@/models/User';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -36,8 +36,7 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
 
   try {
     const { id } = await decrypt(token);
-    const bytes = new Uint8Array(id.map((d: string) => parseInt(d, 10)));
-    const user_id = new TextDecoder().decode(bytes);
+    const user_id = decodeUserId(id);
 
     const user = await User.findById(user_id);
 

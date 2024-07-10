@@ -1,23 +1,16 @@
-import bcrypt from "bcrypt";
-import { loginSchema } from "@/app/login/constants";
-import { dbConnect } from "@/dbConfig/dbConnnect";
-import VerifyEmailOTPTemplate from "@/emails/VerifyEmailOTPTemplate";
-import { STATUSCODES } from "@/helpers/enums";
-import {
-  generateOTP,
-  parseBody,
-  sendEmail,
-  sendResponse,
-  throwNewError,
-} from "@/helpers/functions";
-import { apiAsyncHandler } from "@/lib/apiAsyncHandler";
-import { encrypt } from "@/lib/jwt";
-import User from "@/models/User";
-import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import bcrypt from 'bcrypt';
+import { loginSchema } from '@/app/login/constants';
+import { dbConnect } from '@/dbConfig/dbConnnect';
+import VerifyEmailOTPTemplate from '@/emails/VerifyEmailOTPTemplate';
+import { STATUSCODES } from '@/helpers/enums';
+import { createDateTime, generateOTP, parseBody, sendEmail, sendResponse, throwNewError } from '@/helpers/functions';
+import { apiAsyncHandler } from '@/lib/apiAsyncHandler';
+import { encodeUserId, encrypt } from '@/lib/jwt';
+import User from '@/models/User';
+import { cookies } from 'next/headers';
+import { NextRequest } from 'next/server';
 
 dbConnect();
-
 export const POST = apiAsyncHandler(async (req: NextRequest) => {
   const body = await parseBody(req);
 
@@ -26,7 +19,7 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
   if (!success) {
     throwNewError({
       status: STATUSCODES.BAD_REQUEST,
-      error: "Invalid Payload",
+      error: 'Invalid Payload',
     });
   }
 
@@ -39,12 +32,11 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
   if (!user) {
     return sendResponse({
       status: STATUSCODES.NOT_FOUND,
-      message: "User not found",
+      message: 'User not found',
     });
   }
 
-  const _ = await bcrypt.compare(password, user.password);
-  if (!_) {
+  if (!(await bcrypt.compare(password, user.password))) {
     throwNewError({
       status: STATUSCODES.NOT_FOUND,
       error: `Email or password is wrong`,
@@ -53,26 +45,27 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
 
   if (!user?.isVerified) {
     const otp = generateOTP();
-    const verifyCodeExpiry = new Date(Date.now() + 10 * 60 * 1000);
-    await User.findByIdAndUpdate(user.id, {
-      $set: {
-        verifyCode: otp,
-        verifyCodeExpiry,
-      },
-    });
-    const encodedUserId = new TextEncoder().encode(user.id);
+    const verifyCodeExpiry = createDateTime({ minutes: 10 });
+
     const verifyEmailToken = await encrypt(verifyCodeExpiry, {
-      id: Array.from(encodedUserId),
+      id: encodeUserId(user.id),
       expiresIn: verifyCodeExpiry,
     });
 
     const { error } = await sendEmail({
       to: email,
-      subject: "Email Verification",
+      subject: 'Email Verification',
       template: VerifyEmailOTPTemplate({ username: user.username, otp }),
     });
 
     if (!error) {
+      await User.findByIdAndUpdate(user.id, {
+        $set: {
+          verifyCode: otp,
+          verifyCodeExpiry,
+        },
+      });
+
       return sendResponse({
         status: 200,
         message: `To login, please check ${email} to verfiy`,
@@ -85,15 +78,14 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
       });
     }
   } else {
-    const expiresIn = new Date(Date.now() + 30 * 60 * 1000); // 30 mintues
-    const encodedUserId = new TextEncoder().encode(user.id);
+    const expiresIn = createDateTime({ seconds: 30 });
 
     const token = await encrypt(expiresIn, {
-      id: Array.from(encodedUserId),
+      id: encodeUserId(user.id),
       expiresIn,
     });
 
-    cookies().set("token", token, {
+    cookies().set('token', token, {
       httpOnly: true,
       expires: expiresIn,
     });

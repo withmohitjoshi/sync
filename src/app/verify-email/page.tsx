@@ -1,17 +1,17 @@
-"use client";
-import React, { useCallback, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { initialValues, verifyEmailSchema } from "./constants";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { VerifyEmailFormInitialValuesT } from "./types";
-import { apiClient } from "@/lib/interceptor";
-import { useRouter } from "next/navigation";
-import { AppRouterPagePropsT } from "@/helpers/types";
-import { resendEmail } from "./actions";
+'use client';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { initialValues, verifyEmailSchema } from './constants';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { VerifyEmailFormInitialValuesT } from './types';
+import { apiClient } from '@/lib/interceptor';
+import { useRouter } from 'next/navigation';
+import { AppRouterPagePropsT } from '@/helpers/types';
+import { resendVerifyEmail } from './actions';
 
 let id: NodeJS.Timeout;
 const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
-  const token = searchParams?.token || "";
+  const token = searchParams?.token || '';
   const [isResendEmailDisabled, setIsResendEmailDisabled] = useState(true);
   const router = useRouter();
   const {
@@ -24,9 +24,9 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
   });
 
   useEffect(() => {
-    if (isResendEmailDisabled) {
+    if (isResendEmailDisabled && token) {
       id = setInterval(() => {
-        const timer = document.getElementById("timer");
+        const timer = document.getElementById('timer');
         if (timer && timer.textContent) {
           const timeLeft = parseInt(timer.textContent);
           if (timeLeft <= 0) {
@@ -40,7 +40,7 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
     return () => {
       clearInterval(id);
     };
-  }, [isResendEmailDisabled]);
+  }, [isResendEmailDisabled, token]);
 
   const onSubmit = async (data: VerifyEmailFormInitialValuesT) => {
     if (token) {
@@ -48,12 +48,12 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        method: "POST",
-        url: "auth/verify-email",
+        method: 'POST',
+        url: 'auth/verify-email',
         data,
       });
       if (response.status === 200) {
-        router.push("/login");
+        router.push('/login');
       }
     }
   };
@@ -61,25 +61,23 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <label>Code</label>
-      <input {...register("code")} type="text" />
+      <input {...register('code')} type='text' />
       <button
-        disabled={isResendEmailDisabled}
-        type="button"
+        disabled={isResendEmailDisabled || !token}
+        type='button'
         onClick={async () => {
-          if (isResendEmailDisabled === false) {
-            if (token) {
-              setIsResendEmailDisabled(true);
-              const timer = document.getElementById("timer");
-              if (timer) {
-                timer.textContent = "60";
-              }
-              const resp = await resendEmail(token);
-              if (resp.status === 200) {
-                router.push(`/verify-email?token=${resp?.data?.token}`);
-              } else {
-                setIsResendEmailDisabled(false);
-                console.error({ resp });
-              }
+          if (isResendEmailDisabled === false && token) {
+            setIsResendEmailDisabled(true);
+            const timer = document.getElementById('timer');
+            if (timer) {
+              timer.textContent = '60';
+            }
+            const resp = await resendVerifyEmail(token);
+            if (resp.status === 200) {
+              router.push(`/verify-email?token=${resp?.data?.token}`);
+            } else {
+              setIsResendEmailDisabled(false);
+              console.error({ resp });
             }
           }
         }}
@@ -87,10 +85,10 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
         Resend Email
       </button>
       <div>
-        <p id="timer">60</p>
+        <p id='timer'>60</p>
         <span>s</span>
       </div>
-      <button type="submit" disabled={!isValid}>
+      <button type='submit' disabled={!isValid}>
         Submit
       </button>
     </form>

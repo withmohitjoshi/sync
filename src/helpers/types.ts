@@ -18,3 +18,10 @@ export type AppRouterPagePropsT = {
   params?: any;
   searchParams?: any;
 };
+
+export type CreateDateTimeT = {
+  seconds?: number;
+  minutes?: number;
+  hours?: number;
+  days?: number;
+};

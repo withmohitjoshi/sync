@@ -1,12 +1,14 @@
 'use server';
 
+import { dbConnect } from '@/dbConfig/dbConnnect';
 import VerifyEmailOTPTemplate from '@/emails/VerifyEmailOTPTemplate';
 import { STATUSCODES } from '@/helpers/enums';
-import { generateOTP, sendEmail, sendResponse } from '@/helpers/functions';
-import { decrypt, encrypt } from '@/lib/jwt';
+import { createDateTime, generateOTP, sendEmail } from '@/helpers/functions';
+import { decodeUserId, decrypt, encodeUserId, encrypt } from '@/lib/jwt';
 import User from '@/models/User';
 
-export const resendEmail = async (token: string) => {
+dbConnect();
+export const resendVerifyEmail = async (token: string) => {
   if (!token) {
     return {
       status: STATUSCODES.UNAUTHORIZED,
@@ -15,8 +17,7 @@ export const resendEmail = async (token: string) => {
   }
   try {
     const { id } = await decrypt(token);
-    const bytes = new Uint8Array(id.map((d: string) => parseInt(d, 10)));
-    const user_id = new TextDecoder().decode(bytes);
+    const user_id = decodeUserId(id);
 
     const user = await User.findById(user_id);
 
@@ -37,7 +38,7 @@ export const resendEmail = async (token: string) => {
     const { email, username } = user!;
 
     const otp = generateOTP();
-    const verifyCodeExpiry = new Date(Date.now() + 10 * 60 * 1000);
+    const verifyCodeExpiry = createDateTime({ minutes: 10 });
 
     const { error } = await sendEmail({
       to: email,
@@ -53,10 +54,8 @@ export const resendEmail = async (token: string) => {
         },
       });
 
-      const encodedUserId = new TextEncoder().encode(user.id);
-
       const verifyEmailToken = await encrypt(verifyCodeExpiry, {
-        id: Array.from(encodedUserId),
+        id: encodeUserId(user.id),
         expiresIn: verifyCodeExpiry,
       });
 
