@@ -1,8 +1,12 @@
-import axios from 'axios';
-import { redirect } from 'next/navigation';
+import axios from "axios";
+import { redirect } from "next/navigation";
+
+const baseURL = process.env.SITE_PORT
+  ? `${process.env.SITE_URL}:${process.env.SITE_PORT}`
+  : `${process.env.SITE_URL}`;
 
 export const apiClient = axios.create({
-  baseURL: '/api',
+  baseURL: `${baseURL}/api/`,
 });
 
 apiClient.interceptors.request.use(
