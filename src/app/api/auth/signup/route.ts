@@ -1,13 +1,20 @@
-import bcrypt from 'bcrypt';
-import { signupSchema } from '@/app/signup/constants';
-import { dbConnect } from '@/dbConfig/dbConnnect';
-import { STATUSCODES } from '@/helpers/enums';
-import { createDateTime, generateOTP, parseBody, sendEmail, sendResponse, throwNewError } from '@/helpers/functions';
-import { apiAsyncHandler } from '@/lib/apiAsyncHandler';
-import User from '@/models/User';
-import { NextRequest } from 'next/server';
-import { encodeUserId, encrypt } from '@/lib/jwt';
-import VerifyEmailOTPTemplate from '@/emails/VerifyEmailOTPTemplate';
+import bcrypt from "bcrypt";
+import { signupSchema } from "@/app/signup/constants";
+import { dbConnect } from "@/dbConfig/dbConnnect";
+import { STATUSCODES } from "@/helpers/enums";
+import {
+  createDateTime,
+  generateOTP,
+  parseBody,
+  sendEmail,
+  sendResponse,
+  throwNewError,
+} from "@/helpers/functions";
+import { apiAsyncHandler } from "@/lib/apiAsyncHandler";
+import User from "@/models/User";
+import { NextRequest } from "next/server";
+import { encodeUserId, encrypt } from "@/lib/jwt";
+import VerifyEmailOTPTemplate from "@/emails/VerifyEmailOTPTemplate";
 
 dbConnect();
 export const POST = apiAsyncHandler(async (req: NextRequest) => {
@@ -18,7 +25,7 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
   if (!success) {
     throwNewError({
       status: STATUSCODES.BAD_REQUEST,
-      error: 'Invalid Payload',
+      error: "Invalid Payload",
     });
   }
 
@@ -34,7 +41,7 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
   ]);
 
   if (isEmailInUse || isUsernameInUse) {
-    const error = isEmailInUse ? 'Email already used' : 'Username already used';
+    const error = isEmailInUse ? "Email already used" : "Username already used";
     throwNewError({
       status: STATUSCODES.CONFLICT,
       error,
@@ -54,11 +61,11 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
 
   try {
     const user = await newUser.save();
-    // await sendEmail({
-    //   to: email,
-    //   subject: 'Email Verification',
-    //   template: VerifyEmailOTPTemplate({ username: username, otp }),
-    // });
+    await sendEmail({
+      to: email,
+      subject: "Email Verification",
+      template: VerifyEmailOTPTemplate({ username: username, otp }),
+    });
 
     const verifyEmailToken = await encrypt(verifyCodeExpiry, {
       id: encodeUserId(user.id),
@@ -71,7 +78,7 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
       data: { token: verifyEmailToken },
     });
   } catch (error) {
-    console.error('Error while sending mail or saving new user:', { error });
+    console.error("Error while sending mail or saving new user:", { error });
     const isUserGetCreatedInDB = await User.findOne({ email });
     if (isUserGetCreatedInDB) {
       User.deleteOne({ email });
