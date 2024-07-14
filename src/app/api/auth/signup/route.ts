@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { signupSchema } from "@/app/signup/constants";
+import { signupSchema } from "@/app/(public)/signup/constants";
 import { dbConnect } from "@/dbConfig/dbConnnect";
 import { STATUSCODES } from "@/helpers/enums";
 import {

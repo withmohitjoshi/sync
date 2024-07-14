@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { loginSchema } from '@/app/login/constants';
+import { loginSchema } from '@/app/(public)/login/constants';
 import { dbConnect } from '@/dbConfig/dbConnnect';
 import VerifyEmailOTPTemplate from '@/emails/VerifyEmailOTPTemplate';
 import { STATUSCODES } from '@/helpers/enums';

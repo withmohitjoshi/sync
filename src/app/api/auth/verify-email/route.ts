@@ -1,4 +1,4 @@
-import { verifyEmailSchema } from '@/app/verify-email/constants';
+import { verifyEmailSchema } from '@/app/(public)/verify-email/constants';
 import { dbConnect } from '@/dbConfig/dbConnnect';
 import { STATUSCODES } from '@/helpers/enums';
 import { parseBody, sendResponse, throwNewError } from '@/helpers/functions';
