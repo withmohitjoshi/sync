@@ -1,5 +1,10 @@
-import { default as MuiButton } from "@mui/material/Button";
+import { ButtonProps, default as MuiButton } from "@mui/material/Button";
 import { ButtonLoader } from "@/components";
+
+type FormSubmitButtonT = ButtonProps & {
+  isPending: boolean;
+  LoadingComponent: () => JSX.Element;
+};
 
 export const FormSubmitButton = ({
   children,
@@ -7,7 +12,7 @@ export const FormSubmitButton = ({
   isPending,
   LoadingComponent = () => <ButtonLoader />,
   ...rest
-}: any) => {
+}: FormSubmitButtonT) => {
   return (
     <MuiButton
       fullWidth

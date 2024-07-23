@@ -1,11 +1,11 @@
-import { default as MuiButton } from "@mui/material/Button";
+import { default as MuiButton, ButtonProps } from "@mui/material/Button";
 
 export const Button = ({
   children,
   type = "button",
   disabled,
   ...rest
-}: any) => {
+}: ButtonProps) => {
   return (
     <>
       <MuiButton fullWidth variant="contained" {...{ type, disabled, ...rest }}>
