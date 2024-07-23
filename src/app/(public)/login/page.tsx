@@ -1,15 +1,21 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { initialValues, loginSchema } from "./constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginFormInitialValuesT } from "./types";
 import { apiClient } from "@/lib/interceptor";
 import { useRouter } from "next/navigation";
-import { Button, PasswordInputField, TextInputField } from "@/components";
-import { Box, Container, Typography } from "@mui/material";
+import {
+  FormSubmitButton,
+  PasswordInputField,
+  TextInputField,
+} from "@/components";
+import { Box, Typography } from "@mui/material";
+import Link from "next/link";
 
 const LoginPage = () => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const {
     register,
@@ -18,21 +24,28 @@ const LoginPage = () => {
   } = useForm<LoginFormInitialValuesT>({
     defaultValues: initialValues,
     resolver: zodResolver(loginSchema),
+    mode: "onTouched",
+    reValidateMode: "onBlur",
   });
 
   const onSubmit: SubmitHandler<LoginFormInitialValuesT> = async (
     data: LoginFormInitialValuesT
   ) => {
-    const response = await apiClient({
-      method: "POST",
-      url: "auth/login",
-      data,
-    });
-    const token = response?.data?.data?.token;
-    if (token) {
-      router.push(`/verify-email?token=${token}`);
-    } else {
-      router.replace(`/`);
+    try {
+      setIsSubmitting(true);
+      const response = await apiClient({
+        method: "POST",
+        url: "auth/login",
+        data,
+      });
+      const token = response?.data?.data?.token;
+      if (token) {
+        router.push(`/verify-email?token=${token}`);
+      } else if (response.status === 200) {
+        router.replace(`/`);
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -46,7 +59,7 @@ const LoginPage = () => {
         gap: 4,
       }}
     >
-      <Typography variant="h1">Login</Typography>
+      <Typography variant="h2">Login</Typography>
       <TextInputField
         {...register("email")}
         error={errors.email?.message}
@@ -60,15 +73,15 @@ const LoginPage = () => {
         label="Password"
         placeholder="Enter your password"
       />
-      <Button type="submit" disabled={!isValid}>
+      <FormSubmitButton
+        disabled={!isValid}
+        isPending={isSubmitting}
+      >
         Submit
-      </Button>
-      <Typography component={"p"}>
-        Don&#39;t have an account?
-        <Typography component={"span"} mx={1}>
-          SignUp
-        </Typography>
-      </Typography>
+      </FormSubmitButton>
+      <Link href="/signup" prefetch={true}>
+        Don&#39;t have an account? SignUp
+      </Link>
     </Box>
   );
 };
