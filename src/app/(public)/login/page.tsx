@@ -8,11 +8,12 @@ import { apiClient } from "@/lib/interceptor";
 import { useRouter } from "next/navigation";
 import {
   FormSubmitButton,
+  NavLink,
   PasswordInputField,
   TextInputField,
 } from "@/components";
 import { Box, Typography } from "@mui/material";
-import Link from "next/link";
+import theme from "@/theme/theme.config";
 
 const LoginPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -56,7 +57,7 @@ const LoginPage = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        gap: 4,
+        gap: theme.spacing(4),
       }}
     >
       <Typography variant="h2">Login</Typography>
@@ -73,15 +74,10 @@ const LoginPage = () => {
         label="Password"
         placeholder="Enter your password"
       />
-      <FormSubmitButton
-        disabled={!isValid}
-        isPending={isSubmitting}
-      >
+      <FormSubmitButton disabled={!isValid} isPending={isSubmitting}>
         Submit
       </FormSubmitButton>
-      <Link href="/signup" prefetch={true}>
-        Don&#39;t have an account? SignUp
-      </Link>
+      <NavLink href={"/signup"} prefetch>Don&#39;t have an account? SignUp</NavLink>
     </Box>
   );
 };

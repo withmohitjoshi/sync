@@ -1,5 +1,5 @@
 import { default as MuiButton } from "@mui/material/Button";
-import { ButtonLoader } from "../Loaders/ButtonLoader";
+import { ButtonLoader } from "@/components";
 
 export const FormSubmitButton = ({
   children,

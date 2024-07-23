@@ -8,21 +8,19 @@ import { apiClient } from "@/lib/interceptor";
 import { useRouter } from "next/navigation";
 import { AppRouterPagePropsT } from "@/helpers/types";
 import { resendVerifyEmail } from "./actions";
-import { alpha, Box, CircularProgress, Typography } from "@mui/material";
-import {
-  Button,
-  FormSubmitButton,
-  NumberInputField,
-  TextInputField,
-} from "@/components";
+import { alpha, Box, Typography } from "@mui/material";
+import { FormSubmitButton, NumberInputField } from "@/components";
 import { grey } from "@mui/material/colors";
+import theme from "@/theme/theme.config";
+import { Spinner } from "@/components/Loaders";
 
 let id: NodeJS.Timeout;
 const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
   const token = searchParams?.token || "";
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isResendEmailDisabled, setIsResendEmailDisabled] = useState(true);
-  const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -72,6 +70,20 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
     }
   };
 
+  const onResendEmail = async () => {
+    if (isResendEmailDisabled === false) {
+      setIsResendEmailDisabled(true);
+      const timer = document.getElementById("timer");
+      if (timer) timer.textContent = "60";
+      const resp = await resendVerifyEmail(token);
+      if (resp.status === 200) {
+        router.push(`/verify-email?token=${resp?.data?.token}`);
+      } else {
+        setIsResendEmailDisabled(false);
+      }
+    }
+  };
+
   return (
     <Box
       component={"form"}
@@ -79,7 +91,7 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        gap: 4,
+        gap: theme.spacing(4),
       }}
     >
       <Typography variant="h2">Verify Email</Typography>
@@ -94,43 +106,25 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
       </FormSubmitButton>
       {token && (
         <Typography
+          component={"p"}
           variant="body1"
-          color={isResendEmailDisabled ? alpha(grey[500], 0.5) : "inherit"}
+          onClick={onResendEmail}
           sx={{
             display: "flex",
             alignItems: "center",
-            gap: 1,
+            gap: theme.spacing(0.5),
             cursor: isResendEmailDisabled ? "not-allowed" : "pointer",
-          }}
-          onClick={async () => {
-            if (isResendEmailDisabled === false) {
-              setIsResendEmailDisabled(true);
-              const timer = document.getElementById("timer");
-              if (timer) {
-                timer.textContent = "60";
-              }
-              const resp = await resendVerifyEmail(token);
-              if (resp.status === 200) {
-                router.push(`/verify-email?token=${resp?.data?.token}`);
-              } else {
-                setIsResendEmailDisabled(false);
-                console.error({ resp });
-              }
-            }
+            color: isResendEmailDisabled ? alpha(grey[500], 0.5) : "inherit",
           }}
         >
+          <span>Resend Email</span>
           {isResendEmailDisabled && (
-            <CircularProgress disableShrink color="secondary" size={20} />
-          )}
-          Resend Email
-          {isResendEmailDisabled ? (
             <>
-              {" in "}
+              {"after "}
               <span id="timer">60</span>
               {" sec"}
+              <Spinner disableShrink color="secondary" size={'1rem'} thickness={4}/>
             </>
-          ) : (
-            <></>
           )}
         </Typography>
       )}

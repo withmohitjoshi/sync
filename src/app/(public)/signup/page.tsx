@@ -8,11 +8,12 @@ import { useRouter } from "next/navigation";
 import { Box, Typography } from "@mui/material";
 import {
   FormSubmitButton,
+  NavLink,
   PasswordInputField,
   TextInputField,
 } from "@/components";
-import Link from "next/link";
 import { useState } from "react";
+import theme from "@/theme/theme.config";
 
 const SignupPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,7 +56,7 @@ const SignupPage = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        gap: 4,
+        gap: theme.spacing(4),
       }}
     >
       <Typography variant="h2">Signup</Typography>
@@ -79,15 +80,12 @@ const SignupPage = () => {
         label="Password"
         placeholder="Enter your password"
       />
-      <FormSubmitButton
-        disabled={!isValid}
-        isPending={isSubmitting}
-      >
+      <FormSubmitButton disabled={!isValid} isPending={isSubmitting}>
         Submit
       </FormSubmitButton>
-      <Link href="/login" prefetch={true}>
+      <NavLink href={"/login"} prefetch>
         Already have an account? Login
-      </Link>
+      </NavLink>
     </Box>
   );
 };

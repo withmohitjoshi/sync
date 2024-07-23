@@ -1,5 +1,6 @@
 "use client";
-import { alpha, Box, Container } from "@mui/material";
+import theme from "@/theme/theme.config";
+import { alpha, Box, Container, Paper } from "@mui/material";
 import { grey } from "@mui/material/colors";
 
 export default function PublicRootLayout({
@@ -17,19 +18,18 @@ export default function PublicRootLayout({
         flexDirection: "column",
       }}
     >
-      <Box
+      <Paper
         sx={{
-          p: 4,
-          flexGrow: 0.2,
+          p: theme.spacing(4),
           display: "flex",
           justifyContent: "center",
           flexDirection: "column",
-          borderRadius: 3,
+          borderRadius: 2,
           border: `2px solid ${alpha(grey[500], 0.5)}`,
         }}
       >
         {children}
-      </Box>
+      </Paper>
     </Container>
   );
 }
