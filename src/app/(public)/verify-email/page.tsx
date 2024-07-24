@@ -50,9 +50,9 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
   }, [isResendEmailDisabled, token]);
 
   const onSubmit = async (data: VerifyEmailFormInitialValuesT) => {
-    try {
-      setIsSubmitting(true);
-      if (token) {
+    if (token) {
+      try {
+        setIsSubmitting(true);
         const response = await apiClient({
           headers: {
             Authorization: `Bearer ${token}`,
@@ -64,9 +64,9 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
         if (response.status === 200) {
           router.push("/login");
         }
+      } finally {
+        setIsSubmitting(false);
       }
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -101,7 +101,7 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
         label="Code"
         placeholder="Enter code"
       />
-      <FormSubmitButton disabled={!isValid} isPending={isSubmitting}>
+      <FormSubmitButton disabled={!isValid || !token} isPending={isSubmitting}>
         Submit
       </FormSubmitButton>
       {token && (
@@ -123,7 +123,12 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
               {"after "}
               <span id="timer">60</span>
               {" sec"}
-              <Spinner disableShrink color="secondary" size={'1rem'} thickness={4}/>
+              <Spinner
+                disableShrink
+                color="secondary"
+                size={"1rem"}
+                thickness={4}
+              />
             </>
           )}
         </Typography>

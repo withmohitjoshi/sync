@@ -68,16 +68,23 @@ const LoginPage = () => {
         placeholder="Enter your email"
         type="email"
       />
-      <PasswordInputField
-        {...register("password")}
-        error={errors.password?.message}
-        label="Password"
-        placeholder="Enter your password"
-      />
+      <Box display={'flex'} alignItems={'end'} flexDirection={'column'}>
+        <PasswordInputField
+          {...register("password")}
+          error={errors.password?.message}
+          label="Password"
+          placeholder="Enter your password"
+        />
+        <NavLink href={"/forgot-password"} prefetch>
+          Forgot Password
+        </NavLink>
+      </Box>
       <FormSubmitButton disabled={!isValid} isPending={isSubmitting}>
         Submit
       </FormSubmitButton>
-      <NavLink href={"/signup"} prefetch>Don&#39;t have an account? SignUp</NavLink>
+      <NavLink href={"/signup"} prefetch>
+        Don&#39;t have an account? SignUp
+      </NavLink>
     </Box>
   );
 };

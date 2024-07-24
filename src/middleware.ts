@@ -2,7 +2,13 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { updateJWTSession } from "./lib/jwt";
 
-const publicRoutes = ["/login", "/signup", "/verify-email"];
+const publicRoutes = [
+  "/login",
+  "/signup",
+  "/verify-email",
+  "/forgot-password",
+  "/reset-passwod",
+];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -35,5 +41,12 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/login", "/signup", "/verify-email", "/"],
+  matcher: [
+    "/login",
+    "/signup",
+    "/verify-email",
+    "/forgot-password",
+    "/reset-passwod",
+    "/",
+  ],
 };
