@@ -10,5 +10,5 @@ export enum STATUSCODES {
 }
 
 export enum CUSTOMEVENTS {
-  ADD_ALERT = "add_alert",
+  ADD_ALERT = "ADD_ALERT",
 }

@@ -3,11 +3,7 @@ import { useContext } from "react";
 
 export const useAlert = () => {
   const { addAlert } = useContext(AlertContext);
-  const handleAddAlert = ({
-    detail,
-  }: {
-    detail: Omit<AlertBoxT, "timestamp">;
-  }) => {
+  const handleAddAlert = ({ detail }: any) => {
     addAlert(detail);
   };
   return { handleAddAlert };
