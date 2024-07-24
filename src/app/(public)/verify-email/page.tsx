@@ -62,7 +62,7 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
           data,
         });
         if (response.status === 200) {
-          router.push("/login");
+          router.replace("/login");
         }
       } finally {
         setIsSubmitting(false);
