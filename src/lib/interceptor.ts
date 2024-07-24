@@ -1,3 +1,4 @@
+import { addAlertEvent } from "@/helpers/customevents";
 import axios from "axios";
 import { redirect } from "next/navigation";
 
@@ -19,7 +20,13 @@ apiClient.interceptors.response.use(
     return response;
   },
   function (error) {
-    if (error.response && error.response.status === 401) {      
+    document.dispatchEvent(
+      addAlertEvent({
+        message: error.response?.data?.message ?? "something went wrong",
+        severity: "error",
+      })
+    );
+    if (error.response && error.response.status === 401) {
       redirect("/login");
     }
     return error;

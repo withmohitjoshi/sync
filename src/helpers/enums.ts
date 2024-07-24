@@ -8,3 +8,7 @@ export enum STATUSCODES {
   CREATED = 200,
   UPDATED = 201,
 }
+
+export enum CUSTOMEVENTS {
+  ADD_ALERT = "add_alert",
+}

@@ -1,14 +1,9 @@
 "use client";
 import theme from "@/theme/theme.config";
 import { Alert, AlertProps, Box, Snackbar } from "@mui/material";
-import {
-  createContext,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 
-type AlertBoxT = AlertProps & {
+export type AlertBoxT = AlertProps & {
   timestamp: number;
   message: string;
   closesIn?: number;
@@ -18,7 +13,9 @@ type AlertContextT = {
   addAlert: (_: Omit<AlertBoxT, "timestamp">) => void;
 };
 
-export const AlertContext = createContext<AlertContextT>({ addAlert: () => {} });
+export const AlertContext = createContext<AlertContextT>({
+  addAlert: () => {},
+});
 
 export const AlertProvider = ({
   children,
@@ -66,10 +63,9 @@ const AlertBox = ({
   clearAlert,
   message,
   timestamp,
-  closesIn = 6000,
+  closesIn = 2500,
   ...rest
 }: AlertBoxT & { clearAlert: () => void }) => {
-  
   useEffect(() => {
     const elapsedTime = Date.now() - timestamp;
     const remainingTime = Math.max(closesIn - elapsedTime, 0);

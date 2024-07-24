@@ -1,4 +1,14 @@
-import { AlertContext } from "@/providers/AlertContext";
+import { AlertBoxT, AlertContext } from "@/providers/AlertContext";
 import { useContext } from "react";
 
-export const useAlert = () => useContext(AlertContext);
+export const useAlert = () => {
+  const { addAlert } = useContext(AlertContext);
+  const handleAddAlert = ({
+    detail,
+  }: {
+    detail: Omit<AlertBoxT, "timestamp">;
+  }) => {
+    addAlert(detail);
+  };
+  return { handleAddAlert };
+};
