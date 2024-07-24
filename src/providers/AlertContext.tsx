@@ -4,7 +4,6 @@ import { Alert, AlertProps, Box, Snackbar } from "@mui/material";
 import {
   createContext,
   useCallback,
-  useContext,
   useEffect,
   useState,
 } from "react";
@@ -19,9 +18,7 @@ type AlertContextT = {
   addAlert: (_: Omit<AlertBoxT, "timestamp">) => void;
 };
 
-const AlertContext = createContext<AlertContextT>({ addAlert: () => {} });
-
-export const useAlert = () => useContext(AlertContext);
+export const AlertContext = createContext<AlertContextT>({ addAlert: () => {} });
 
 export const AlertProvider = ({
   children,

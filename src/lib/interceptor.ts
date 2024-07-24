@@ -19,9 +19,9 @@ apiClient.interceptors.response.use(
     return response;
   },
   function (error) {
-    // if (error.response && error.response.status === 401) {
-    //   redirect("/login");
-    // }
+    if (error.response && error.response.status === 401) {      
+      redirect("/login");
+    }
     return error;
   }
 );
