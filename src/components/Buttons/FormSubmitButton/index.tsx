@@ -3,7 +3,7 @@ import { ButtonLoader } from "@/components";
 
 type FormSubmitButtonT = ButtonProps & {
   isPending: boolean;
-  LoadingComponent: () => JSX.Element;
+  LoadingComponent?: () => JSX.Element;
 };
 
 export const FormSubmitButton = ({

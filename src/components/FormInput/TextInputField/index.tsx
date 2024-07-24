@@ -1,8 +1,12 @@
-import { TextField } from "@mui/material";
+import { TextField, TextFieldProps } from "@mui/material";
 import { forwardRef } from "react";
 
+type TextInputFieldFnPropsT = Omit<TextFieldProps, "error"> & {
+  error?: string;
+};
+
 const TextInputFieldFn = (
-  { type = "text", label, error, ...rest }: any,
+  { type = "text", label, error, ...rest }: TextInputFieldFnPropsT,
   ref: any
 ) => {
   return (

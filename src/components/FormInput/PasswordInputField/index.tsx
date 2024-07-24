@@ -1,9 +1,21 @@
-import { IconButton, InputAdornment, TextField } from "@mui/material";
-import { forwardRef, useState } from "react";
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import {
+  IconButton,
+  InputAdornment,
+  TextField,
+  TextFieldProps,
+} from "@mui/material";
+import React, { forwardRef, useState } from "react";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
-const PasswordInputFieldFn = ({ label, error, ...rest }: any, ref: any) => {
+type PasswordInputFieldFnPropsT = Omit<TextFieldProps, "type" | "error"> & {
+  error?: string;
+};
+
+const PasswordInputFieldFn = (
+  { label, error, ...rest }: PasswordInputFieldFnPropsT,
+  ref: any
+) => {
   const [showPassword, setShowPassword] = useState(false);
   return (
     <TextField
@@ -20,7 +32,7 @@ const PasswordInputFieldFn = ({ label, error, ...rest }: any, ref: any) => {
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
-            <IconButton onClick={()=>setShowPassword(prev => !prev)}>
+            <IconButton onClick={() => setShowPassword((prev) => !prev)}>
               {showPassword ? <VisibilityOffIcon /> : <RemoveRedEyeIcon />}
             </IconButton>
           </InputAdornment>
@@ -29,4 +41,5 @@ const PasswordInputFieldFn = ({ label, error, ...rest }: any, ref: any) => {
     />
   );
 };
+
 export const PasswordInputField = forwardRef(PasswordInputFieldFn);

@@ -7,10 +7,8 @@ export const Button = ({
   ...rest
 }: ButtonProps) => {
   return (
-    <>
-      <MuiButton fullWidth variant="contained" {...{ type, disabled, ...rest }}>
-        {children}
-      </MuiButton>
-    </>
+    <MuiButton fullWidth variant="contained" {...{ type, disabled, ...rest }}>
+      {children}
+    </MuiButton>
   );
 };
