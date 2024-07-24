@@ -1,11 +1,12 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { updateJWTSession } from "./lib/jwt";
 
 const publicRoutes = ["/login", "/signup", "/verify-email"];
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const response = NextResponse.next();
+  let response = NextResponse.next();
   const token = cookies().get("token")?.value;
 
   if (!token) {
@@ -20,7 +21,15 @@ export function middleware(request: NextRequest) {
         new URL(`${process.env.NEXT_PUBLIC_SITE_BASEURL}`, request.url)
       );
     } else {
-      return response;
+      try {
+        await updateJWTSession(request, response);
+        return response;
+      } catch (error) {
+        console.log("Error in update session:", error);
+        return NextResponse.redirect(
+          new URL(`${process.env.NEXT_PUBLIC_SITE_BASEURL}`, request.url)
+        );
+      }
     }
   }
 }
