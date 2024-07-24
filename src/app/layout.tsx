@@ -4,6 +4,7 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "@/theme/theme.config";
 import { CssBaseline } from "@mui/material";
+import { AlertProvider } from "@/providers/AlertContext";
 export const metadata: Metadata = {
   title: "Sync",
   description: "Get synced with you friends",
@@ -20,12 +21,14 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <SocketProvider uri={uri}>
-          <AppRouterCacheProvider>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              {children}
-            </ThemeProvider>
-          </AppRouterCacheProvider>
+          <AlertProvider>
+            <AppRouterCacheProvider>
+              <ThemeProvider theme={theme}>
+                <CssBaseline />
+                {children}
+              </ThemeProvider>
+            </AppRouterCacheProvider>
+          </AlertProvider>
         </SocketProvider>
       </body>
     </html>
