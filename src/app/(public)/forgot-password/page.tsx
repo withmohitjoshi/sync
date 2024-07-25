@@ -9,6 +9,7 @@ import theme from "@/theme/theme.config";
 import { FormSubmitButton, NavLink, TextInputField } from "@/components";
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/lib/interceptor";
+import { GenerateAlert } from "@/providers/AlertContext";
 
 const ForgotPassword = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,16 +29,19 @@ const ForgotPassword = () => {
   const onSubmit: SubmitHandler<ForgotPasswordFormInitialValuesT> = async (
     data: ForgotPasswordFormInitialValuesT
   ) => {
-    try {
-      setIsSubmitting(true);
-      const response = await apiClient({
-        method: "POST",
-        url: "auth/forgot-password",
-        data,
+    setIsSubmitting(true);
+    const response = await apiClient({
+      method: "POST",
+      url: "auth/forgot-password",
+      data,
+    });
+    if (response.status === 200) {
+      new GenerateAlert({
+        message: response.data?.message,
       });
-    } finally {
-      setIsSubmitting(false);
+      router.replace("/login");
     }
+    setIsSubmitting(false);
   };
   return (
     <Box
