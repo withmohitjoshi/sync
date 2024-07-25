@@ -78,12 +78,16 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
       if (timer) timer.textContent = "60";
       const resp = await resendVerifyEmail(token);
       const newToken = resp?.data?.token;
-      new GenerateAlert({
-        message: resp?.message!,
-      });
       if (newToken) {
+        new GenerateAlert({
+          message: resp?.message!,
+        });
         router.push(`/verify-email?token=${newToken}`);
       } else {
+        new GenerateAlert({
+          message: resp?.message!,
+          severity: "error",
+        });
         setIsResendEmailDisabled(false);
       }
     }

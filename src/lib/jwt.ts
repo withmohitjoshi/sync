@@ -39,7 +39,7 @@ export const updateJWTSession = async (req: NextRequest, res: NextResponse) => {
   const threshold = Date.now() + 30 * 1000;
   const isNearExpiration = payload.exp * 1000 < threshold;
   if (isNearExpiration) {
-    payload.expiesIn = createDateTime({ minutes: 1 });
+    payload.expiesIn = createDateTime({ minutes: 10 });
     const newToken = await encrypt(payload.expiesIn, payload);
     res.cookies.set("token", newToken, {
       httpOnly: true,

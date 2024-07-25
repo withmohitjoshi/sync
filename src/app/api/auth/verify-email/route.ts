@@ -34,7 +34,12 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
 
   const { code } = data!;
 
-  const { id } = await decrypt(token);
+  const { id } = await decrypt(token).catch(() =>
+    throwNewError({
+      status: STATUSCODES.EXPIRED,
+      error: "Link is expired",
+    })
+  );
   const user_id = decodeUserId(id);
 
   const user = await User.findById(user_id);

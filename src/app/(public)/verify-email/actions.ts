@@ -64,7 +64,14 @@ export const resendVerifyEmail = async (token: string) => {
         message: `Something went wrong while sending verification mail`,
       };
     }
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.name?.includes("JWTExpired")) {
+      return {
+        status: STATUSCODES.EXPIRED,
+        message: "Link is expired",
+      };
+    }
+
     return {
       status: STATUSCODES.SERVER_ERROR,
       message: "Something went wrong (default)",
