@@ -5,4 +5,5 @@ export {
 } from "./FormInput";
 export { Button, FormSubmitButton } from "./Buttons";
 export { NavLink } from "./NavLink";
-export { ButtonLoader } from "./Loaders";
+export { ButtonLoader, Spinner } from "./Loaders";
+export { Sidebar } from "./Sidebar";

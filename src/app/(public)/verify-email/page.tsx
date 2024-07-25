@@ -12,7 +12,7 @@ import { alpha, Box, Typography } from "@mui/material";
 import { FormSubmitButton, NumberInputField } from "@/components";
 import { grey } from "@mui/material/colors";
 import theme from "@/theme/theme.config";
-import { Spinner } from "@/components/Loaders";
+import { Spinner } from "@/components";
 import { GenerateAlert } from "@/providers/AlertContext";
 
 let id: NodeJS.Timeout;
