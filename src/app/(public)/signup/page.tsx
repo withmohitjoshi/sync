@@ -47,7 +47,7 @@ const SignupPage = () => {
       });
       router.push(`/verify-email?token=${token}`);
     }
-    setIsSubmitting(true);
+    setIsSubmitting(false);
   };
 
   return (

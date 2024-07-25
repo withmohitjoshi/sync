@@ -5,7 +5,7 @@ import { parseBody, sendResponse, throwNewError } from "@/helpers/functions";
 import { apiAsyncHandler } from "@/lib/apiAsyncHandler";
 import { decodeUserId, decrypt } from "@/lib/jwt";
 import User from "@/models/User";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 dbConnect();
 export const POST = apiAsyncHandler(async (req: NextRequest) => {
