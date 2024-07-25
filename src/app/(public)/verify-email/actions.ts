@@ -1,20 +1,14 @@
-'use server';
+"use server";
 
-import { dbConnect } from '@/dbConfig/dbConnnect';
-import VerifyEmailOTPTemplate from '@/emails/VerifyEmailOTPTemplate';
-import { STATUSCODES } from '@/helpers/enums';
-import { createDateTime, generateOTP, sendEmail } from '@/helpers/functions';
-import { decodeUserId, decrypt, encodeUserId, encrypt } from '@/lib/jwt';
-import User from '@/models/User';
+import { dbConnect } from "@/dbConfig/dbConnnect";
+import VerifyEmailOTPTemplate from "@/emails/VerifyEmailOTPTemplate";
+import { STATUSCODES } from "@/helpers/enums";
+import { createDateTime, generateOTP, sendEmail } from "@/helpers/functions";
+import { decodeUserId, decrypt, encodeUserId, encrypt } from "@/lib/jwt";
+import User from "@/models/User";
 
 dbConnect();
 export const resendVerifyEmail = async (token: string) => {
-  if (!token) {
-    return {
-      status: STATUSCODES.UNAUTHORIZED,
-      error: 'Invalid or broken link',
-    };
-  }
   try {
     const { id } = await decrypt(token);
     const user_id = decodeUserId(id);
@@ -24,14 +18,14 @@ export const resendVerifyEmail = async (token: string) => {
     if (!user) {
       return {
         status: STATUSCODES.NOT_FOUND,
-        message: 'User not found',
+        message: "User not found",
       };
     }
 
     if (user?.isVerified) {
       return {
-        status: 410,
-        message: 'Invalid or broken link',
+        status: STATUSCODES.EXPIRED,
+        message: "Link is expired",
       };
     }
 
@@ -42,7 +36,7 @@ export const resendVerifyEmail = async (token: string) => {
 
     const { error } = await sendEmail({
       to: email,
-      subject: 'Email Verification',
+      subject: "Email Verification",
       template: VerifyEmailOTPTemplate({ username, otp }),
     });
 
@@ -67,13 +61,13 @@ export const resendVerifyEmail = async (token: string) => {
     } else {
       return {
         status: STATUSCODES.SERVER_ERROR,
-        message: `Something went wrong while sending verification mail try again later`,
+        message: `Something went wrong while sending verification mail`,
       };
     }
   } catch (error) {
     return {
-      status: STATUSCODES.UNAUTHORIZED,
-      message: 'Invalid or broken link',
+      status: STATUSCODES.SERVER_ERROR,
+      message: "Something went wrong (default)",
     };
   }
 };

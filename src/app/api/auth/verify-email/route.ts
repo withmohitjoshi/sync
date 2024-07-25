@@ -48,7 +48,7 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
 
   if (user?.isVerified) {
     throwNewError({
-      status: 410,
+      status: STATUSCODES.EXPIRED,
       error: "Link is expired",
     });
   }
