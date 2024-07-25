@@ -14,6 +14,7 @@ import {
 } from "@/components";
 import { useState } from "react";
 import theme from "@/theme/theme.config";
+import { GenerateAlert } from "@/providers/AlertContext";
 
 const SignupPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -33,20 +34,20 @@ const SignupPage = () => {
   const onSubmit: SubmitHandler<SignupFormInitialValuesT> = async (
     data: SignupFormInitialValuesT
   ) => {
-    try {
-      setIsSubmitting(true);
-      const response = await apiClient({
-        method: "POST",
-        url: "auth/signup",
-        data,
+    setIsSubmitting(true);
+    const response = await apiClient({
+      method: "POST",
+      url: "auth/signup",
+      data,
+    });
+    const token = response.data?.data?.token;
+    if (token) {
+      new GenerateAlert({
+        message: response.data?.message,
       });
-      const token = response.data?.data?.token;
-      if (token) {
-        router.push(`/verify-email?token=${token}`);
-      }
-    } finally {
-      setIsSubmitting(true);
+      router.push(`/verify-email?token=${token}`);
     }
+    setIsSubmitting(true);
   };
 
   return (

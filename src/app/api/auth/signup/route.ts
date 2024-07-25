@@ -59,34 +59,28 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
     verifyCodeExpiry,
   });
 
-  try {
-    const user = await newUser.save();
-    await sendEmail({
-      to: email,
-      subject: "Email Verification",
-      template: VerifyEmailOTPTemplate({ username: username, otp }),
-    });
+  const { error } = await sendEmail({
+    to: email,
+    subject: "Email Verification",
+    template: VerifyEmailOTPTemplate({ username: username, otp }),
+  });
 
-    const verifyEmailToken = await encrypt(verifyCodeExpiry, {
-      id: encodeUserId(user.id),
-      expiresIn: verifyCodeExpiry,
+  if (error) {
+    throwNewError({
+      status: STATUSCODES.SERVER_ERROR,
+      error: `Account not created yet, Something went wrong while sending verification mail`,
     });
-
-    return sendResponse({
-      status: 200,
-      message: `Registration Successfully, please check ${email} to verfiy`,
-      data: { token: verifyEmailToken },
-    });
-  } catch (error) {
-    console.error("Error while sending mail or saving new user:", { error });
-    const isUserGetCreatedInDB = await User.findOne({ email });
-    if (isUserGetCreatedInDB) {
-      User.deleteOne({ email });
-    } else {
-      throwNewError({
-        status: STATUSCODES.SERVER_ERROR,
-        error: `Account not created yet, Something went wrong while sending verification mail`,
-      });
-    }
   }
+  const user = await newUser.save();
+
+  const verifyEmailToken = await encrypt(verifyCodeExpiry, {
+    id: encodeUserId(user.id),
+    expiresIn: verifyCodeExpiry,
+  });
+
+  return sendResponse({
+    status: 200,
+    message: `Registration Successfully, please check ${email} to verfiy`,
+    data: { token: verifyEmailToken },
+  });
 });
