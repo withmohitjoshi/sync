@@ -10,6 +10,7 @@ import { apiClient } from "@/lib/interceptor";
 import { FormSubmitButton, PasswordInputField } from "@/components";
 import { Box, Typography } from "@mui/material";
 import theme from "@/theme/theme.config";
+import { GenerateAlert } from "@/providers/AlertContext";
 
 const ResetPassword = ({ searchParams }: AppRouterPagePropsT) => {
   const token = searchParams?.token || "";
@@ -27,24 +28,22 @@ const ResetPassword = ({ searchParams }: AppRouterPagePropsT) => {
 
   const onSubmit = async (data: ResetPasswordFormInitialValuesT) => {
     if (token) {
-      try {
-        setIsSubmitting(true);
-        if (token) {
-          const response = await apiClient({
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            method: "POST",
-            url: "auth/reset-password",
-            data,
-          });
-          if (response.status === 200) {
-            router.replace("/login");
-          }
-        }
-      } finally {
-        setIsSubmitting(false);
+      setIsSubmitting(true);
+      const response = await apiClient({
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        method: "POST",
+        url: "auth/reset-password",
+        data,
+      });
+      if (response.status === 200) {
+        new GenerateAlert({
+          message: response.data?.message,
+        });
+        router.replace("/login");
       }
+      setIsSubmitting(false);
     }
   };
 

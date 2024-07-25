@@ -16,7 +16,7 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
 
   if (!token) {
     throwNewError({
-      status: STATUSCODES.UNAUTHORIZED,
+      status: STATUSCODES.NOT_FOUND,
       error: "Invalid or broken link",
     });
     return;
@@ -35,46 +35,35 @@ export const POST = apiAsyncHandler(async (req: NextRequest) => {
 
   const { newPassword } = data!;
 
-  try {
-    const { id } = await decrypt(token);
-    const user_id = decodeUserId(id);
+  const { id } = await decrypt(token);
+  const user_id = decodeUserId(id);
 
-    const user = await User.findById(user_id);
+  const user = await User.findById(user_id);
 
-    if (!user) {
-      return sendResponse({
-        status: STATUSCODES.NOT_FOUND,
-        message: "User not found",
-      });
-    } else if (!user?.forgotPasswordToken) {
-      sendResponse({
-        status: STATUSCODES.UNAUTHORIZED,
-        message: "Invalid or broken link",
-      });
-    }
-
-    if (token === user?.forgotPasswordToken) {
-      await User.findByIdAndUpdate(user_id, {
-        $set: {
-          forgotPasswordToken: null,
-          forgotPasswordTokenExpiry: null,
-          password: await bcrypt.hash(newPassword, 10),
-        },
-      });
-      return sendResponse({
-        status: 200,
-        message: `New Password set successfully`,
-      });
-    } else {
-      return sendResponse({
-        status: STATUSCODES.UNAUTHORIZED,
-        message: "Invalid or broken link",
-      });
-    }
-  } catch (error: any) {
+  if (!user) {
     throwNewError({
-      status: STATUSCODES.UNAUTHORIZED,
-      error: "Invalid or broken link",
+      status: STATUSCODES.NOT_FOUND,
+      error: `User not found`,
+    });
+  } else if (
+    !user?.forgotPasswordToken ||
+    token !== user?.forgotPasswordToken
+  ) {
+    throwNewError({
+      status: STATUSCODES.NOT_FOUND,
+      error: `Invalid or broken link`,
     });
   }
+
+  await User.findByIdAndUpdate(user_id, {
+    $set: {
+      forgotPasswordToken: null,
+      forgotPasswordTokenExpiry: null,
+      password: await bcrypt.hash(newPassword, 10),
+    },
+  });
+  return sendResponse({
+    status: 200,
+    message: `New Password set successfully`,
+  });
 });
