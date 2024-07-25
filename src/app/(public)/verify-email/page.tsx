@@ -13,6 +13,7 @@ import { FormSubmitButton, NumberInputField } from "@/components";
 import { grey } from "@mui/material/colors";
 import theme from "@/theme/theme.config";
 import { Spinner } from "@/components/Loaders";
+import { GenerateAlert } from "@/providers/AlertContext";
 
 let id: NodeJS.Timeout;
 const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
@@ -51,22 +52,22 @@ const VerifyEmailPage = ({ searchParams }: AppRouterPagePropsT) => {
 
   const onSubmit = async (data: VerifyEmailFormInitialValuesT) => {
     if (token) {
-      try {
-        setIsSubmitting(true);
-        const response = await apiClient({
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          method: "POST",
-          url: "auth/verify-email",
-          data,
+      setIsSubmitting(true);
+      const response = await apiClient({
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        method: "POST",
+        url: "auth/verify-email",
+        data,
+      });
+      if (response.status === 200) {
+        new GenerateAlert({
+          message: response.data?.message,
         });
-        if (response.status === 200) {
-          router.replace("/login");
-        }
-      } finally {
-        setIsSubmitting(false);
+        router.replace("/login");
       }
+      setIsSubmitting(false);
     }
   };
 
