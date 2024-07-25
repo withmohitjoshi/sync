@@ -1,4 +1,5 @@
 "use client";
+import { dispatchAddAlert } from "@/helpers/customevents";
 import theme from "@/theme/theme.config";
 import { Alert, AlertProps, Box, Snackbar } from "@mui/material";
 import { createContext, useCallback, useEffect, useState } from "react";
@@ -16,6 +17,12 @@ type AlertContextT = {
 export const AlertContext = createContext<AlertContextT>({
   addAlert: () => {},
 });
+
+export class GenerateAlert {
+  constructor(_: Omit<AlertBoxT, "timestamp">) {
+    dispatchAddAlert(_);
+  }
+}
 
 export const AlertProvider = ({
   children,

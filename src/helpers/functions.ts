@@ -26,8 +26,8 @@ export const jsonParse = (str: string) => {
   }
 };
 
-export const throwNewError = (d: object) => {
-  throw new Error(JSON.stringify(d));
+export const throwNewError = (_: object) => {
+  throw new Error(JSON.stringify(_));
 };
 
 export const parseBody = async (req: NextRequest) => {

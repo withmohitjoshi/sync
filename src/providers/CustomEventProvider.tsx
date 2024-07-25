@@ -1,5 +1,4 @@
 "use client";
-
 import { CUSTOMEVENTS } from "@/helpers/enums";
 import { useAlert } from "@/hooks";
 import { useEffect } from "react";
