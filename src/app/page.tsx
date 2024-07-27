@@ -1,23 +1,24 @@
-import { Sidebar } from "@/components";
-import { MenuOpen } from "@mui/icons-material";
-import { Box, Grid, IconButton } from "@mui/material";
+import { Header } from "@/components";
+import { Box, Grid, Toolbar } from "@mui/material";
 
-export default async function HomePage() {
+export default function HomePage() {
   return (
-    <Box display="flex" height="100vh" gap={2}>
-      <Box flexGrow={0}>
-        <Sidebar />
-      </Box>
-      <Box flexGrow={1}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={4}>
-            <Box>Chat list</Box>
+    <>
+      <Header />
+      <Box component="main" sx={{ py: 1, px: 3, width: "100%" }}>
+        <Toolbar />{" "}
+        {/* empty toolbar to get the heigt of a toolbar cause toolbar is not static */}
+        <Box display="flex">
+          <Grid container spacing={2}>
+            <Grid item sm={3}>
+              <Box>Chat list</Box>
+            </Grid>
+            <Grid item sm={9}>
+              <Box>Chat Area</Box>
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={8}>
-            <Box>Chat Area</Box>
-          </Grid>
-        </Grid>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 }

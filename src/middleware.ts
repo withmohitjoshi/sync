@@ -47,6 +47,8 @@ export const config = {
     "/verify-email",
     "/forgot-password",
     "/reset-passwod",
+    "/myaccount",
+    "/change-password",
     "/",
   ],
 };
