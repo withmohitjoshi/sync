@@ -1,4 +1,3 @@
 export type ChangeUsernameInitialValuesT = {
-    username: string;
-  };
-  
+  username: string;
+};

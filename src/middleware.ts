@@ -14,15 +14,15 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   let response = NextResponse.next();
   const token = cookies().get("token")?.value;
-
+  const isPublicRoutes = publicRoutes.some((route) => route === pathname);
   if (!token) {
-    if (publicRoutes.includes(pathname)) {
+    if (isPublicRoutes) {
       return response;
     } else {
       return NextResponse.redirect(new URL(publicRoutes[0], request.url));
     }
   } else {
-    if (publicRoutes.includes(pathname)) {
+    if (isPublicRoutes) {
       return NextResponse.redirect(
         new URL(`${process.env.NEXT_PUBLIC_SITE_BASEURL}`, request.url)
       );
