@@ -15,7 +15,7 @@ export const ChangeUsername = ({ username }: { username: string }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isDirty },
     reset,
   } = useForm({
     defaultValues: initialValues,
@@ -64,7 +64,7 @@ export const ChangeUsername = ({ username }: { username: string }) => {
         placeholder="Enter a username"
         type="text"
       />
-      <FormSubmitButton disabled={!isValid} isPending={isSubmitting}>
+      <FormSubmitButton disabled={!isValid || !isDirty} isPending={isSubmitting}>
         Change
       </FormSubmitButton>
     </Box>
