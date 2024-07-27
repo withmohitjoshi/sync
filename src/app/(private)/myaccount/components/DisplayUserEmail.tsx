@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
 
-export const DisplayUserEmail = () => {
+export const DisplayUserEmail = ({ email }: { email: string }) => {
   return (
     <Box
       sx={{
@@ -12,7 +12,7 @@ export const DisplayUserEmail = () => {
       }}
     >
       <Typography variant="body2" sx={{ opacity: 0.5, letterSpacing: 1 }}>
-        withmohitjoshi@gmail.com
+        {email}
       </Typography>
     </Box>
   );

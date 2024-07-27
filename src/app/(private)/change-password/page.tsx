@@ -28,7 +28,7 @@ const ChangePasswordPage = () => {
   ) => {
     setIsSubmitting(true);
     const response = await apiClient({
-      method: "POST",
+      method: "PUT",
       url: "user/change-password",
       data:data.oldPassword,
     });

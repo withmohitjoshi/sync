@@ -8,3 +8,6 @@ export const changeUsernameSchema: ZodType<ChangeUsernameInitialValuesT> =
   z.object({
     username: z.string().min(2).max(20),
   });
+export const findByEmailSchema = z.object({
+  active: z.boolean(),
+});

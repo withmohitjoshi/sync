@@ -3,17 +3,20 @@ import { FormSubmitButton, TextInputField } from "@/components";
 import theme from "@/theme/theme.config";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { changeUsernameSchema, initialValues } from "../constants";
 import { ChangeUsernameInitialValuesT } from "../types";
+import { apiClient } from "@/lib/interceptor";
+import { GenerateAlert } from "@/providers/AlertContext";
 
-export const ChangeUsername = () => {
+export const ChangeUsername = ({ username }: { username: string }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
+    reset,
   } = useForm({
     defaultValues: initialValues,
     resolver: zodResolver(changeUsernameSchema),
@@ -21,9 +24,28 @@ export const ChangeUsername = () => {
     reValidateMode: "onSubmit",
   });
 
+  useEffect(() => {
+    if (username) {
+      reset({ username });
+    }
+  }, [reset, username]);
+
   const onSubmit: SubmitHandler<ChangeUsernameInitialValuesT> = async (
-    _: ChangeUsernameInitialValuesT
-  ) => {};
+    data: ChangeUsernameInitialValuesT
+  ) => {
+    setIsSubmitting(true);
+    const response = await apiClient({
+      method: "PUT",
+      url: "user/update-username",
+      data,
+    });
+    if (response.status === 200) {
+      new GenerateAlert({
+        message: response.data?.message,
+      });
+    }
+    setIsSubmitting(false);
+  };
 
   return (
     <Box
@@ -39,7 +61,6 @@ export const ChangeUsername = () => {
       <TextInputField
         {...register("username")}
         error={errors.username?.message}
-        label="Username"
         placeholder="Enter a username"
         type="text"
       />

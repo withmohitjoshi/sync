@@ -1,4 +1,4 @@
-import { changePasswordSchema } from "@/app/(private)/change-password/constants";
+import { changeUsernameSchema } from "@/app/(private)/myaccount/constants";
 import { dbConnect } from "@/dbConfig/dbConnnect";
 import { STATUSCODES } from "@/helpers/enums";
 import { parseBody, sendResponse, throwNewError } from "@/helpers/functions";
@@ -6,23 +6,34 @@ import { apiAsyncHandler } from "@/lib/apiAsyncHandler";
 import { jwtVerifyHandler } from "@/lib/jwtVerifyHanlder";
 import User from "@/models/User";
 import { NextRequest } from "next/server";
-import bcrypt from "bcrypt";
 
 dbConnect();
 export const PUT = apiAsyncHandler(
   jwtVerifyHandler(async (req: NextRequest, userId: any) => {
     const body = await parseBody(req);
 
-    const { success, data } = changePasswordSchema.safeParse(body);
+    const { success, data } = changeUsernameSchema.safeParse(body);
 
     if (!success) {
       throwNewError({
         status: STATUSCODES.BAD_REQUEST,
         error: "Invalid Payload",
       });
+      return;
     }
 
-    const { oldPassword, newPassword } = data!;
+    const { username } = data;
+
+    const isUsernameInUse = await User.findOne({
+      username,
+    });
+
+    if (isUsernameInUse) {
+      throwNewError({
+        status: 409,
+        error: `Username not available`,
+      });
+    }
 
     const user = await User.findById(userId);
 
@@ -33,20 +44,14 @@ export const PUT = apiAsyncHandler(
       });
     }
 
-    if (user && !(await bcrypt.compare(oldPassword, user.password))) {
-      throwNewError({
-        status: STATUSCODES.NOT_FOUND,
-        error: `Old password is wrong`,
-      });
-    }
     await User.findByIdAndUpdate(user!.id, {
       $set: {
-        password: await bcrypt.hash(newPassword, 10),
+        username,
       },
     });
     return sendResponse({
       status: 200,
-      message: `Password Changed`,
+      message: `Username changed successfully`,
     });
   })
 );

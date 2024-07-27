@@ -20,13 +20,17 @@ apiClient.interceptors.response.use(
     return response;
   },
   function (error) {
+    if (error.name === "CanceledError") {
+      return error;
+    }
     dispatchAddAlert({
       message: error.response?.data?.message ?? "something went wrong",
       severity: "error",
     });
-    // if (error.response && error.response.status === 401) {
-    //   redirect("/login");
-    // }
+
+    if (error.response && error.response.status === 401) {
+      redirect("/login");
+    }
     return error;
   }
 );
