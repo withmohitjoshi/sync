@@ -7,6 +7,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { ChangePasswordInitialValuesT } from "./types";
 import { Box, Typography } from "@mui/material";
 import theme from "@/theme/theme.config";
+import { apiClient } from "@/lib/interceptor";
+import { GenerateAlert } from "@/providers/AlertContext";
 
 const ChangePasswordPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,8 +24,21 @@ const ChangePasswordPage = () => {
   });
 
   const onSubmit: SubmitHandler<ChangePasswordInitialValuesT> = async (
-    _: ChangePasswordInitialValuesT
-  ) => {};
+    data: ChangePasswordInitialValuesT
+  ) => {
+    setIsSubmitting(true);
+    const response = await apiClient({
+      method: "POST",
+      url: "user/change-password",
+      data:data.oldPassword,
+    });
+    if (response.status === 200) {
+      new GenerateAlert({
+        message: response.data?.message,
+      });
+    }
+    setIsSubmitting(false);
+  };
 
   return (
     <BoxLayout>
