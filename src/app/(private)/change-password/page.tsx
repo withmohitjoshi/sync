@@ -1,6 +1,5 @@
 "use client";
 import { BoxLayout, FormSubmitButton, PasswordInputField } from "@/components";
-import { useState } from "react";
 import { changePasswordSchema, initialValues } from "./constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -8,10 +7,10 @@ import { ChangePasswordInitialValuesT } from "./types";
 import { Box, Typography } from "@mui/material";
 import theme from "@/theme/theme.config";
 import { apiClient } from "@/lib/interceptor";
-import { GenerateAlert } from "@/providers/AlertContext";
+import { GenerateAlert } from "@/providers/AlertProvider";
+import { useMutation } from "@tanstack/react-query";
 
 const ChangePasswordPage = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
     handleSubmit,
@@ -23,22 +22,26 @@ const ChangePasswordPage = () => {
     reValidateMode: "onSubmit",
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["change-password"],
+    mutationFn: (data: ChangePasswordInitialValuesT) =>
+      apiClient({
+        method: "PUT",
+        url: "user/change-password",
+        data,
+      }),
+    onSuccess: ({ data }) => {
+      if (data.status === 200) {
+        new GenerateAlert({
+          message: data?.message,
+        });
+      }
+    },
+  });
+
   const onSubmit: SubmitHandler<ChangePasswordInitialValuesT> = async (
     data: ChangePasswordInitialValuesT
-  ) => {
-    setIsSubmitting(true);
-    const response = await apiClient({
-      method: "PUT",
-      url: "user/change-password",
-      data:data.oldPassword,
-    });
-    if (response.status === 200) {
-      new GenerateAlert({
-        message: response.data?.message,
-      });
-    }
-    setIsSubmitting(false);
-  };
+  ) => mutate(data);
 
   return (
     <BoxLayout>
@@ -64,7 +67,7 @@ const ChangePasswordPage = () => {
           label="New Password"
           placeholder="Enter your new Password"
         />
-        <FormSubmitButton disabled={!isValid} isPending={isSubmitting}>
+        <FormSubmitButton disabled={!isValid} isPending={isPending}>
           Submit
         </FormSubmitButton>
       </Box>

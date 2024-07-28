@@ -1,5 +1,4 @@
 "use client";
-import React, { useState } from "react";
 import { forgotPasswordSchema, initialValues } from "./constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ForgotPasswordFormInitialValuesT } from "./types";
@@ -9,12 +8,11 @@ import theme from "@/theme/theme.config";
 import { FormSubmitButton, NavLink, TextInputField } from "@/components";
 import { useRouter } from "next/navigation";
 import { apiClient } from "@/lib/interceptor";
-import { GenerateAlert } from "@/providers/AlertContext";
+import { GenerateAlert } from "@/providers/AlertProvider";
+import { useMutation } from "@tanstack/react-query";
 
 const ForgotPassword = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-
   const {
     register,
     handleSubmit,
@@ -26,23 +24,27 @@ const ForgotPassword = () => {
     reValidateMode: "onBlur",
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["forgot-password"],
+    mutationFn: (data: ForgotPasswordFormInitialValuesT) =>
+      apiClient({
+        method: "POST",
+        url: "auth/forgot-password",
+        data,
+      }),
+    onSuccess: ({ data }) => {
+      if (data.status === 200) {
+        new GenerateAlert({
+          message: data?.message,
+        });
+        router.replace("/login");
+      }
+    },
+  });
+
   const onSubmit: SubmitHandler<ForgotPasswordFormInitialValuesT> = async (
     data: ForgotPasswordFormInitialValuesT
-  ) => {
-    setIsSubmitting(true);
-    const response = await apiClient({
-      method: "POST",
-      url: "auth/forgot-password",
-      data,
-    });
-    if (response.status === 200) {
-      new GenerateAlert({
-        message: response.data?.message,
-      });
-      router.replace("/login");
-    }
-    setIsSubmitting(false);
-  };
+  ) => mutate(data);
   return (
     <Box
       component={"form"}
@@ -66,7 +68,7 @@ const ForgotPassword = () => {
           Back to Login
         </NavLink>
       </Box>
-      <FormSubmitButton disabled={!isValid} isPending={isSubmitting}>
+      <FormSubmitButton disabled={!isValid} isPending={isPending}>
         Submit
       </FormSubmitButton>
     </Box>

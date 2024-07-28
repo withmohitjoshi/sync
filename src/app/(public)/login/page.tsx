@@ -1,5 +1,4 @@
 "use client";
-import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { initialValues, loginSchema } from "./constants";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,10 +13,10 @@ import {
 } from "@/components";
 import { Box, Typography } from "@mui/material";
 import theme from "@/theme/theme.config";
-import { GenerateAlert } from "@/providers/AlertContext";
+import { GenerateAlert } from "@/providers/AlertProvider";
+import { useMutation } from "@tanstack/react-query";
 
 const LoginPage = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const {
     register,
@@ -30,26 +29,30 @@ const LoginPage = () => {
     reValidateMode: "onBlur",
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["login"],
+    mutationFn: (data: LoginFormInitialValuesT) =>
+      apiClient({
+        method: "POST",
+        url: "auth/login",
+        data,
+      }),
+    onSuccess: ({ data }) => {
+      const token = data?.data?.token;
+      if (token) {
+        new GenerateAlert({
+          message: data?.message,
+        });
+        router.push(`/verify-email?token=${token}`);
+      } else if (data.status === 200) {
+        router.replace(`/`);
+      }
+    },
+  });
+
   const onSubmit: SubmitHandler<LoginFormInitialValuesT> = async (
     data: LoginFormInitialValuesT
-  ) => {
-    setIsSubmitting(true);
-    const response = await apiClient({
-      method: "POST",
-      url: "auth/login",
-      data,
-    });
-    const token = response.data?.data?.token;
-    if (token) {
-      new GenerateAlert({
-        message: response.data?.message,
-      });
-      router.push(`/verify-email?token=${token}`);
-    } else if (response.status === 200) {
-      router.replace(`/`);
-    }
-    setIsSubmitting(false);
-  };
+  ) => mutate(data);
 
   return (
     <Box
@@ -80,7 +83,7 @@ const LoginPage = () => {
           Forgot Password
         </NavLink>
       </Box>
-      <FormSubmitButton disabled={!isValid} isPending={isSubmitting}>
+      <FormSubmitButton disabled={!isValid} isPending={isPending}>
         Submit
       </FormSubmitButton>
       <NavLink href={"/signup"} prefetch>

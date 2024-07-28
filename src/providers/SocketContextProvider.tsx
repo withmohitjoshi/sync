@@ -4,7 +4,7 @@ import { io, Socket } from 'socket.io-client';
 
 export const SocketContext = createContext<Socket | null>(null);
 
-export const SocketProvider = ({
+export const SocketContextProvider = ({
   children,
   uri,
 }: Readonly<{

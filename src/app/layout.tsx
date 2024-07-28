@@ -1,11 +1,14 @@
 import { Metadata } from "next";
-import { SocketProvider } from "@/providers/SocketContext";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "@/theme/theme.config";
 import { CssBaseline } from "@mui/material";
-import { AlertProvider } from "@/providers/AlertContext";
-import { CustomEventProvider } from "@/providers/CustomEventProvider";
+import {
+  AlertProvider,
+  CustomEventProvider,
+  QueryClientProvider,
+  SocketContextProvider,
+} from "@/providers";
 export const metadata: Metadata = {
   title: "Sync",
   description: "Get synced with you friends",
@@ -21,18 +24,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SocketProvider uri={uri}>
-          <AlertProvider>
-            <CustomEventProvider>
-              <AppRouterCacheProvider>
-                <ThemeProvider theme={theme}>
-                  <CssBaseline />
-                  {children}
-                </ThemeProvider>
-              </AppRouterCacheProvider>
-            </CustomEventProvider>
-          </AlertProvider>
-        </SocketProvider>
+        <QueryClientProvider>
+          <SocketContextProvider uri={uri}>
+            <AlertProvider>
+              <CustomEventProvider>
+                <AppRouterCacheProvider>
+                  <ThemeProvider theme={theme}>
+                    <CssBaseline />
+                    {children}
+                  </ThemeProvider>
+                </AppRouterCacheProvider>
+              </CustomEventProvider>
+            </AlertProvider>
+          </SocketContextProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );

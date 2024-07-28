@@ -1,4 +1,4 @@
-import { AlertBoxT } from "@/providers/AlertContext";
+import { AlertBoxT } from "@/providers/AlertProvider";
 import { CUSTOMEVENTS } from "./enums";
 
 export const dispatchAddAlert = (data: Omit<AlertBoxT, "timestamp">) =>

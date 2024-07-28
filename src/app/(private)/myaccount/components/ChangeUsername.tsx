@@ -8,7 +8,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { changeUsernameSchema, initialValues } from "../constants";
 import { ChangeUsernameInitialValuesT } from "../types";
 import { apiClient } from "@/lib/interceptor";
-import { GenerateAlert } from "@/providers/AlertContext";
+import { GenerateAlert } from "@/providers/AlertProvider";
 
 export const ChangeUsername = ({ username }: { username: string }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);

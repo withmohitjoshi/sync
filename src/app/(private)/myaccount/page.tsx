@@ -9,16 +9,15 @@ import { useRouter } from "next/navigation";
 import { BoxLayout } from "@/components";
 import { apiClient } from "@/lib/interceptor";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { GenerateAlert } from "@/providers/AlertContext";
+import { GenerateAlert } from "@/providers/AlertProvider";
 
 const MyAccountPage = () => {
+  const router = useRouter();
   const [state, setState] = useState({
     username: "",
     findByEmail: true,
     email: "",
   });
-
-  const router = useRouter();
 
   // get user details
   const getUserDetails = useCallback(async (signal: AbortSignal) => {

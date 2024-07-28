@@ -1,7 +1,6 @@
 "use client";
 import { AppRouterPagePropsT } from "@/helpers/types";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ResetPasswordFormInitialValuesT } from "./types";
 import { initialValues, resetPasswordSchema } from "./constants";
@@ -10,13 +9,12 @@ import { apiClient } from "@/lib/interceptor";
 import { FormSubmitButton, PasswordInputField } from "@/components";
 import { Box, Typography } from "@mui/material";
 import theme from "@/theme/theme.config";
-import { GenerateAlert } from "@/providers/AlertContext";
+import { GenerateAlert } from "@/providers/AlertProvider";
+import { useMutation } from "@tanstack/react-query";
 
 const ResetPassword = ({ searchParams }: AppRouterPagePropsT) => {
   const token = searchParams?.token || "";
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const {
     register,
     handleSubmit,
@@ -26,25 +24,29 @@ const ResetPassword = ({ searchParams }: AppRouterPagePropsT) => {
     resolver: zodResolver(resetPasswordSchema),
   });
 
-  const onSubmit = async (data: ResetPasswordFormInitialValuesT) => {
-    if (token) {
-      setIsSubmitting(true);
-      const response = await apiClient({
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["reset-password"],
+    mutationFn: (data: ResetPasswordFormInitialValuesT) =>
+      apiClient({
         headers: {
           Authorization: `Bearer ${token}`,
         },
         method: "POST",
         url: "auth/reset-password",
         data,
-      });
-      if (response.status === 200) {
+      }),
+    onSuccess: ({ data }) => {
+      if (data.status === 200) {
         new GenerateAlert({
-          message: response.data?.message,
+          message: data?.message,
         });
         router.replace("/login");
       }
-      setIsSubmitting(false);
-    }
+    },
+  });
+
+  const onSubmit = async (data: ResetPasswordFormInitialValuesT) => {
+    if (token) mutate(data);
   };
 
   return (
@@ -64,7 +66,7 @@ const ResetPassword = ({ searchParams }: AppRouterPagePropsT) => {
         label="New Password"
         placeholder="Enter your new Password"
       />
-      <FormSubmitButton disabled={!isValid || !token} isPending={isSubmitting}>
+      <FormSubmitButton disabled={!isValid || !token} isPending={isPending}>
         Submit
       </FormSubmitButton>
     </Box>

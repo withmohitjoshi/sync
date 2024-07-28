@@ -12,13 +12,11 @@ import {
   PasswordInputField,
   TextInputField,
 } from "@/components";
-import { useState } from "react";
 import theme from "@/theme/theme.config";
-import { GenerateAlert } from "@/providers/AlertContext";
+import { GenerateAlert } from "@/providers/AlertProvider";
+import { useMutation } from "@tanstack/react-query";
 
 const SignupPage = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const router = useRouter();
   const {
     register,
@@ -31,24 +29,28 @@ const SignupPage = () => {
     reValidateMode: "onBlur",
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["singup"],
+    mutationFn: (data: SignupFormInitialValuesT) =>
+      apiClient({
+        method: "POST",
+        url: "auth/signup",
+        data,
+      }),
+    onSuccess: ({ data }) => {
+      const token = data?.data?.token;
+      if (token) {
+        new GenerateAlert({
+          message: data?.message,
+        });
+        router.push(`/verify-email?token=${token}`);
+      }
+    },
+  });
+
   const onSubmit: SubmitHandler<SignupFormInitialValuesT> = async (
     data: SignupFormInitialValuesT
-  ) => {
-    setIsSubmitting(true);
-    const response = await apiClient({
-      method: "POST",
-      url: "auth/signup",
-      data,
-    });
-    const token = response.data?.data?.token;
-    if (token) {
-      new GenerateAlert({
-        message: response.data?.message,
-      });
-      router.push(`/verify-email?token=${token}`);
-    }
-    setIsSubmitting(false);
-  };
+  ) => mutate(data);
 
   return (
     <Box
@@ -81,7 +83,7 @@ const SignupPage = () => {
         label="Password"
         placeholder="Enter your password"
       />
-      <FormSubmitButton disabled={!isValid} isPending={isSubmitting}>
+      <FormSubmitButton disabled={!isValid} isPending={isPending}>
         Submit
       </FormSubmitButton>
       <NavLink href={"/login"} prefetch>
