@@ -29,7 +29,10 @@ apiClient.interceptors.response.use(
     });
 
     if (error.response && error.response.status === 401) {
-      redirect("/login");
+      if (window !== undefined || window !== "undefined") {
+        window.location.href = "/login";
+        window.location.reload();
+      }
     }
     return error;
   }
