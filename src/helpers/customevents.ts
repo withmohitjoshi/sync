@@ -7,3 +7,10 @@ export const dispatchAddAlert = (data: Omit<AlertBoxT, "timestamp">) =>
       detail: data,
     })
   );
+
+export const dispatchRefetchQuery = (queryKey: string | string[]) =>
+  document.dispatchEvent(
+    new CustomEvent(CUSTOMEVENTS.REFETCH_QUERY, {
+      detail: queryKey,
+    })
+  );

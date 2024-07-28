@@ -12,4 +12,5 @@ export enum STATUSCODES {
 
 export enum CUSTOMEVENTS {
   ADD_ALERT = "ADD_ALERT",
+  REFETCH_QUERY = "REFETCH_QUERY",
 }

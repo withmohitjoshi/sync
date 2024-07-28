@@ -1,6 +1,6 @@
 "use client";
 import { CUSTOMEVENTS } from "@/helpers/enums";
-import { useAlert } from "@/hooks";
+import { useAlert, useRefetchQuery } from "@/hooks";
 import { useEffect } from "react";
 
 export const CustomEventProvider = ({
@@ -9,12 +9,18 @@ export const CustomEventProvider = ({
   children: React.ReactNode;
 }>) => {
   const { handleAddAlert } = useAlert();
+  const { handleRefetchQuery } = useRefetchQuery();
   useEffect(() => {
     document.addEventListener(CUSTOMEVENTS.ADD_ALERT, handleAddAlert);
+    document.addEventListener(CUSTOMEVENTS.REFETCH_QUERY, handleRefetchQuery);
     return () => {
       document.removeEventListener(CUSTOMEVENTS.ADD_ALERT, handleAddAlert);
+      document.removeEventListener(
+        CUSTOMEVENTS.REFETCH_QUERY,
+        handleRefetchQuery
+      );
     };
-  }, [handleAddAlert]);
+  }, [handleAddAlert, handleRefetchQuery]);
 
   return children;
 };

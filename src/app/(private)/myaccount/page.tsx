@@ -12,12 +12,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { GenerateAlert } from "@/providers/AlertProvider";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { initialState } from "./constants";
+import { dispatchRefetchQuery } from "@/helpers/customevents";
 
 const MyAccountPage = () => {
   const router = useRouter();
   const [state, setState] = useState(initialState);
 
-  const { data = null, isSuccess, refetch } = useQuery({
+  const { data = null, isSuccess } = useQuery({
     queryKey: ["get-user-details"],
     queryFn: () =>
       apiClient({
@@ -44,13 +45,13 @@ const MyAccountPage = () => {
         { active: value },
         {
           onSuccess: ({ data }) => {
-            GenerateAlert.onSuccess(data?.message);            
-            refetch();
+            GenerateAlert.onSuccess(data?.message);
+            dispatchRefetchQuery("get-user-details");
           },
         }
       );
     },
-    [mutate, refetch]
+    [mutate]
   );
 
   // get and then set the user details in state

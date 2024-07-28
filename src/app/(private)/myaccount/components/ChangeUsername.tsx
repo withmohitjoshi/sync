@@ -10,6 +10,7 @@ import { ChangeUsernameInitialValuesT } from "../types";
 import { apiClient } from "@/lib/interceptor";
 import { GenerateAlert } from "@/providers/AlertProvider";
 import { useMutation } from "@tanstack/react-query";
+import { dispatchRefetchQuery } from "@/helpers/customevents";
 
 export const ChangeUsername = ({ username }: { username: string }) => {
   const {
@@ -33,7 +34,10 @@ export const ChangeUsername = ({ username }: { username: string }) => {
         url: "user/update-username",
         data,
       }),
-    onSuccess: ({ data }) => GenerateAlert.onSuccess(data?.message),
+    onSuccess: ({ data }) => {
+      GenerateAlert.onSuccess(data?.message);
+      dispatchRefetchQuery("get-user-details");
+    },
   });
 
   useEffect(() => {
