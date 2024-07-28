@@ -1,5 +1,6 @@
 import { z, ZodType } from "zod";
 import { ResetPasswordFormInitialValuesT } from "./types";
+import { password } from "@/helpers/zodValidations";
 
 export const initialValues: ResetPasswordFormInitialValuesT = {
   newPassword: "",
@@ -7,5 +8,5 @@ export const initialValues: ResetPasswordFormInitialValuesT = {
 
 export const resetPasswordSchema: ZodType<ResetPasswordFormInitialValuesT> =
   z.object({
-    newPassword: z.string().min(8),
+    newPassword: password("New Password"),
   });

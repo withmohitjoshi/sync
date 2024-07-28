@@ -22,8 +22,8 @@ export const ChangeUsername = ({ username }: { username: string }) => {
   } = useForm({
     defaultValues: initialValues,
     resolver: zodResolver(changeUsernameSchema),
-    mode: "onSubmit",
-    reValidateMode: "onSubmit",
+    mode: "onTouched",
+    reValidateMode: "onBlur",
   });
 
   const { mutate, isPending } = useMutation({

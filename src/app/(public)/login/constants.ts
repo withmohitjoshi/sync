@@ -1,11 +1,12 @@
-import { z, ZodType } from 'zod';
-import { LoginFormInitialValuesT } from './types';
+import { z, ZodType } from "zod";
+import { LoginFormInitialValuesT } from "./types";
+import { email, required } from "@/helpers/zodValidations";
 
 export const initialValues: LoginFormInitialValuesT = {
-  email: '',
-  password: '',
+  email: "",
+  password: "",
 };
 export const loginSchema: ZodType<LoginFormInitialValuesT> = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
+  email: email("Email"),
+  password: required('Password')
 });

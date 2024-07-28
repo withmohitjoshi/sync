@@ -1,5 +1,6 @@
 import { z, ZodType } from "zod";
 import { ChangeUsernameInitialValuesT } from "./types";
+import { username } from "@/helpers/zodValidations";
 
 export const initialState = {
   username: "",
@@ -10,10 +11,12 @@ export const initialState = {
 export const initialValues: ChangeUsernameInitialValuesT = {
   username: "",
 };
+
 export const changeUsernameSchema: ZodType<ChangeUsernameInitialValuesT> =
   z.object({
-    username: z.string().min(2).max(20),
+    username: username("Username"),
   });
+
 export const findByEmailSchema = z.object({
   active: z.boolean(),
 });

@@ -1,5 +1,6 @@
 import { z, ZodType } from "zod";
 import { ChangePasswordInitialValuesT } from "./types";
+import { password, required } from "@/helpers/zodValidations";
 
 export const initialValues: ChangePasswordInitialValuesT = {
   oldPassword: "",
@@ -7,6 +8,6 @@ export const initialValues: ChangePasswordInitialValuesT = {
 };
 export const changePasswordSchema: ZodType<ChangePasswordInitialValuesT> =
   z.object({
-    oldPassword: z.string().min(8),
-    newPassword: z.string().min(8),
+    oldPassword: required("Old Password"),
+    newPassword: password("New Password"),
   });

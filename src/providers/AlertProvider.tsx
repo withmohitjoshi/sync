@@ -28,6 +28,12 @@ export class GenerateAlert {
       severity: "success",
     });
   }
+  static onError(message: string) {
+    new GenerateAlert({
+      message,
+      severity: "error",
+    });
+  }
 }
 
 export const AlertProvider = ({
