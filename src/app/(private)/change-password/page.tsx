@@ -30,13 +30,7 @@ const ChangePasswordPage = () => {
         url: "user/change-password",
         data,
       }),
-    onSuccess: ({ data }) => {
-      if (data.status === 200) {
-        new GenerateAlert({
-          message: data?.message,
-        });
-      }
-    },
+    onSuccess: ({ data }) => GenerateAlert.onSuccess(data?.message),
   });
 
   const onSubmit: SubmitHandler<ChangePasswordInitialValuesT> = async (

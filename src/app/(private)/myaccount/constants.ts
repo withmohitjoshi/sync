@@ -1,6 +1,12 @@
 import { z, ZodType } from "zod";
 import { ChangeUsernameInitialValuesT } from "./types";
 
+export const initialState = {
+  username: "",
+  findByEmail: true,
+  email: "",
+};
+
 export const initialValues: ChangeUsernameInitialValuesT = {
   username: "",
 };

@@ -33,12 +33,8 @@ const ForgotPassword = () => {
         data,
       }),
     onSuccess: ({ data }) => {
-      if (data.status === 200) {
-        new GenerateAlert({
-          message: data?.message,
-        });
-        router.replace("/login");
-      }
+      GenerateAlert.onSuccess(data?.message);
+      router.replace("/login");
     },
   });
 

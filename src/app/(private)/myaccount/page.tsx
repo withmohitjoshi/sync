@@ -10,56 +10,62 @@ import { BoxLayout } from "@/components";
 import { apiClient } from "@/lib/interceptor";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GenerateAlert } from "@/providers/AlertProvider";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { initialState } from "./constants";
 
 const MyAccountPage = () => {
   const router = useRouter();
-  const [state, setState] = useState({
-    username: "",
-    findByEmail: true,
-    email: "",
+  const [state, setState] = useState(initialState);
+
+  const { data = null, isSuccess, refetch } = useQuery({
+    queryKey: ["get-user-details"],
+    queryFn: () =>
+      apiClient({
+        method: "GET",
+        url: "user/get-user-details",
+      }),
+    select: (data) => data?.data?.data,
   });
 
-  // get user details
-  const getUserDetails = useCallback(async (signal: AbortSignal) => {
-    const response = await apiClient({
-      method: "GET",
-      url: "user/get-user-details",
-      signal,
-    });
-    const { username, email, findByEmail } = response.data?.data || {};
-    setState((prev) => ({
-      ...prev,
-      username,
-      email,
-      findByEmail,
-    }));
-  }, []);
+  const { mutate } = useMutation({
+    mutationKey: ["find-by-email"],
+    mutationFn: (data: any) =>
+      apiClient({
+        method: "PUT",
+        url: "user/find-by-email",
+        data,
+      }),
+  });
 
   // update anyone can find user by email
-  const handleFindByEmailChange = useCallback(async (value: boolean) => {
-    const response = await apiClient({
-      method: "PUT",
-      url: "user/find-by-email",
-      data: { active: value },
-    });
-    if (response.status === 200) {
-      new GenerateAlert({
-        message: response.data?.message,
-      });
-      setState((prev) => ({
-        ...prev,
-        findByEmail: value,
-      }));
-    }
-  }, []);
+  const handleFindByEmailChange = useCallback(
+    async (value: boolean) => {
+      mutate(
+        { active: value },
+        {
+          onSuccess: ({ data }) => {
+            GenerateAlert.onSuccess(data?.message);            
+            refetch();
+          },
+        }
+      );
+    },
+    [mutate, refetch]
+  );
 
   // get and then set the user details in state
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    getUserDetails(signal);
-    return () => controller.abort();
-  }, [getUserDetails]);
+    if (isSuccess && data) {
+      const { username, email, findByEmail } = data;
+      setState((prev) => ({
+        ...prev,
+        username,
+        email,
+        findByEmail,
+      }));
+    }
+    return () => setState(initialState);
+  }, [data, isSuccess]);
 
   const { username, email, findByEmail } = useMemo(() => state, [state]);
 

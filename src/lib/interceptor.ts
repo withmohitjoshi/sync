@@ -1,6 +1,5 @@
 import { dispatchAddAlert } from "@/helpers/customevents";
 import axios from "axios";
-import { redirect } from "next/navigation";
 
 export const apiClient = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_SITE_BASEURL}/api/`,
@@ -34,6 +33,6 @@ apiClient.interceptors.response.use(
         window.location.reload();
       }
     }
-    return error;
+    return Promise.reject(error);
   }
 );

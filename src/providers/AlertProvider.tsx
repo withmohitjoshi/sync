@@ -22,6 +22,12 @@ export class GenerateAlert {
   constructor(_: Omit<AlertBoxT, "timestamp">) {
     dispatchAddAlert(_);
   }
+  static onSuccess(message: string) {
+    new GenerateAlert({
+      message,
+      severity: "success",
+    });
+  }
 }
 
 export const AlertProvider = ({

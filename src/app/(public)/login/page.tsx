@@ -40,9 +40,7 @@ const LoginPage = () => {
     onSuccess: ({ data }) => {
       const token = data?.data?.token;
       if (token) {
-        new GenerateAlert({
-          message: data?.message,
-        });
+        GenerateAlert.onSuccess(data?.message);
         router.push(`/verify-email?token=${token}`);
       } else if (data.status === 200) {
         router.replace(`/`);
