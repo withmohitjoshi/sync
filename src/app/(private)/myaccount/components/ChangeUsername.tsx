@@ -3,25 +3,37 @@ import { FormSubmitButton, TextInputField } from "@/components";
 import theme from "@/theme/theme.config";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { changeUsernameSchema, initialValues } from "../constants";
 import { ChangeUsernameInitialValuesT } from "../types";
 import { apiClient } from "@/lib/interceptor";
 import { GenerateAlert } from "@/providers/AlertProvider";
+import { useMutation } from "@tanstack/react-query";
 
 export const ChangeUsername = ({ username }: { username: string }) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
+    reset,
+    watch,
     register,
     handleSubmit,
-    formState: { errors, isValid, isDirty },
-    reset,
+    formState: { errors, isValid },
   } = useForm({
     defaultValues: initialValues,
     resolver: zodResolver(changeUsernameSchema),
     mode: "onSubmit",
     reValidateMode: "onSubmit",
+  });
+
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["update-username"],
+    mutationFn: (data: ChangeUsernameInitialValuesT) =>
+      apiClient({
+        method: "PUT",
+        url: "user/update-username",
+        data,
+      }),
+    onSuccess: ({ data }) => GenerateAlert.onSuccess(data?.message),
   });
 
   useEffect(() => {
@@ -32,20 +44,7 @@ export const ChangeUsername = ({ username }: { username: string }) => {
 
   const onSubmit: SubmitHandler<ChangeUsernameInitialValuesT> = async (
     data: ChangeUsernameInitialValuesT
-  ) => {
-    setIsSubmitting(true);
-    const response = await apiClient({
-      method: "PUT",
-      url: "user/update-username",
-      data,
-    });
-    if (response.status === 200) {
-      new GenerateAlert({
-        message: response.data?.message,
-      });
-    }
-    setIsSubmitting(false);
-  };
+  ) => mutate(data);
 
   return (
     <Box
@@ -64,7 +63,10 @@ export const ChangeUsername = ({ username }: { username: string }) => {
         placeholder="Enter a username"
         type="text"
       />
-      <FormSubmitButton disabled={!isValid || !isDirty} isPending={isSubmitting}>
+      <FormSubmitButton
+        disabled={!isValid || watch("username") === username}
+        isPending={isPending}
+      >
         Change
       </FormSubmitButton>
     </Box>
