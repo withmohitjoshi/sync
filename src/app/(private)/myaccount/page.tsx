@@ -6,7 +6,7 @@ import { ChangeUsername } from "./components/ChangeUsername";
 import { DisplayUserEmail } from "./components/DisplayUserEmail";
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 import { useRouter } from "next/navigation";
-import { BoxLayout } from "@/components";
+import { BoxLayout, Button } from "@/components";
 import { apiClient } from "@/lib/interceptor";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GenerateAlert } from "@/providers/AlertProvider";
@@ -97,6 +97,14 @@ const MyAccountPage = () => {
           >
             <ListItemText>Change Password</ListItemText>
             <NavigateNextRoundedIcon />
+          </ListItem>
+          <ListItem
+            sx={{ px: 0, cursor: "pointer" }}
+            onClick={() =>
+              fetch("api/auth/logout").then(() => window.location.reload())
+            }
+          >
+            <Button color="error">Logout</Button>
           </ListItem>
         </List>
       </Box>
