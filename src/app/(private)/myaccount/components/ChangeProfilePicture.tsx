@@ -2,7 +2,7 @@ import React from "react";
 import { alpha, Avatar, Box, IconButton } from "@mui/material";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import theme from "@/theme/theme.config";
-export const ChangeProfilePicture = () => {
+export const ChangeProfilePicture = ({ username }: { username: string }) => {
   return (
     <Box
       sx={{
@@ -21,7 +21,7 @@ export const ChangeProfilePicture = () => {
             fontSize: "2rem",
           }}
         >
-          U
+          {username?.[0] ?? "U"}
         </Avatar>
         <IconButton
           size="small"

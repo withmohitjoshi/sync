@@ -1,4 +1,5 @@
-import mongoose, { Schema, Document } from "mongoose";
+import { EMAIL_REGEX } from "@/helpers/constants";
+import mongoose, { Schema, Document, Types } from "mongoose";
 
 export interface UserI extends Document {
   name: string;
@@ -11,6 +12,10 @@ export interface UserI extends Document {
   verifyCodeExpiry: Date;
   forgotPasswordToken: string;
   forgotPasswordTokenExpiry: Date;
+  contacts: Types.ObjectId[];
+  blockedContacts: Types.ObjectId[];
+  contactsRequestReceived: Types.ObjectId[];
+  contactsRequestSent: Types.ObjectId[];
 }
 
 const UserSchema: Schema<UserI> = new Schema(
@@ -20,7 +25,7 @@ const UserSchema: Schema<UserI> = new Schema(
       required: [true, "Email is required"],
       unique: true,
       trim: true,
-      match: [/.+\@.+\..+/, "Please provide a valid email address"],
+      match: [EMAIL_REGEX, "Please provide a valid email address"],
     },
     password: {
       type: String,
@@ -57,6 +62,30 @@ const UserSchema: Schema<UserI> = new Schema(
       type: Date,
       default: null,
     },
+    contacts: [
+      {
+        type: Types.ObjectId,
+        ref: "users",
+      },
+    ],
+    blockedContacts: [
+      {
+        type: Types.ObjectId,
+        ref: "users",
+      },
+    ],
+    contactsRequestReceived: [
+      {
+        type: Types.ObjectId,
+        ref: "users",
+      },
+    ],
+    contactsRequestSent: [
+      {
+        type: Types.ObjectId,
+        ref: "users",
+      },
+    ],
   },
   {
     timestamps: true,

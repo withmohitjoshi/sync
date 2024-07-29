@@ -1,23 +1,28 @@
-import { Header } from "@/components";
+import { ChatArea, ConactsList, Header } from "@/components";
 import { Box, Grid, Toolbar } from "@mui/material";
 
 export default function HomePage() {
   return (
     <>
       <Header />
-      <Box component="main" sx={{ py: 1, px: 3, width: "100%" }}>
-        <Toolbar />{" "}
-        {/* empty toolbar to get the heigt of a toolbar cause toolbar is not static */}
-        <Box display="flex">
-          <Grid container spacing={2}>
-            <Grid item sm={3}>
-              <Box>Chat list</Box>
-            </Grid>
-            <Grid item sm={9}>
-              <Box>Chat Area</Box>
-            </Grid>
+      <Box
+        component="main"
+        sx={{
+          width: "100%",
+          height: "100vh",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Toolbar />
+        <Grid container sx={{ flexGrow: 1, width: "100%" }}>
+          <Grid item sm={3} flexGrow={1}>
+            <ConactsList />
           </Grid>
-        </Box>
+          <Grid item sm={9} flexGrow={1}>
+            <ChatArea />
+          </Grid>
+        </Grid>
       </Box>
     </>
   );

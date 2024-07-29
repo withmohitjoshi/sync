@@ -23,7 +23,7 @@ const MyAccountPage = () => {
     queryFn: () =>
       apiClient({
         method: "GET",
-        url: "user/get-user-details",
+        url: "user/details/get-user-details",
       }),
     select: (data) => data?.data?.data,
   });
@@ -33,7 +33,7 @@ const MyAccountPage = () => {
     mutationFn: (data: any) =>
       apiClient({
         method: "PUT",
-        url: "user/find-by-email",
+        url: "user/details/find-by-email",
         data,
       }),
   });
@@ -79,7 +79,7 @@ const MyAccountPage = () => {
           gap: theme.spacing(2),
         }}
       >
-        <ChangeProfilePicture />
+        <ChangeProfilePicture username={username} />
         <DisplayUserEmail email={email} />
         <ChangeUsername username={username} />
         <List sx={{ width: "100%", bgcolor: "transparent" }}>

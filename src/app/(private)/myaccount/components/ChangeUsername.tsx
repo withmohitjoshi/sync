@@ -31,7 +31,7 @@ export const ChangeUsername = ({ username }: { username: string }) => {
     mutationFn: (data: ChangeUsernameInitialValuesT) =>
       apiClient({
         method: "PUT",
-        url: "user/update-username",
+        url: "user/details/update-username",
         data,
       }),
     onSuccess: ({ data }) => {

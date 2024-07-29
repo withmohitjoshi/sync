@@ -8,3 +8,5 @@ export { NavLink } from "./NavLink";
 export { ButtonLoader, Spinner } from "./Loaders";
 export { Header } from "./Header";
 export { BoxLayout } from "./BoxLayout";
+export { ConactsList } from "./ConactsList";
+export { ChatArea } from "./ChatArea";

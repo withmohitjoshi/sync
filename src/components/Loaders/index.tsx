@@ -12,5 +12,5 @@ export const ButtonLoader = (props: CircularProgressProps) => {
 };
 
 export const Spinner = (props: CircularProgressProps) => {
-  return <CircularProgress variant="indeterminate" thickness={4} {...props} />;
+  return <CircularProgress variant="indeterminate" thickness={4} disableShrink {...props} />;
 };

@@ -27,7 +27,7 @@ const ChangePasswordPage = () => {
     mutationFn: (data: ChangePasswordInitialValuesT) =>
       apiClient({
         method: "PUT",
-        url: "user/change-password",
+        url: "user/details/change-password",
         data,
       }),
     onSuccess: ({ data }) => GenerateAlert.onSuccess(data?.message),
