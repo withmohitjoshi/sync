@@ -11,7 +11,7 @@ import {
 import { alpha, styled } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import { USERNAME_MAX_LENGTH } from "@/helpers/constants";
+import { EMAIL_MAX_LENGTH } from "@/helpers/constants";
 import React, { useCallback, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/lib/interceptor";
@@ -114,7 +114,7 @@ export const SearchBar = () => {
       </SearchIconWrapper>
       <StyledInputBase
         placeholder="Search by username"
-        inputProps={{ maxLength: USERNAME_MAX_LENGTH }}
+        inputProps={{ maxLength: EMAIL_MAX_LENGTH }}
         onChange={({ target }) =>
           target.value
             ? debounceFn()(() => setSearch(target.value))
