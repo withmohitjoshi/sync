@@ -19,11 +19,9 @@ export const GET = apiAsyncHandler(
       return;
     }
 
-    const { contacts } = user;
-
     return sendResponse({
       status: 200,
-      data: contacts,
+      data: user,
     });
   })
 );

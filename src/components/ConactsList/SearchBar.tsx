@@ -47,6 +47,7 @@ export const SearchBar = () => {
         value={search}
         onChange={({ target }) => setSearch(target.value)}
       />
+      {/* searched contacts will be here */}
     </Search>
   );
 };

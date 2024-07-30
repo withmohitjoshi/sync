@@ -14,8 +14,8 @@ export interface UserI extends Document {
   forgotPasswordTokenExpiry: Date;
   contacts: Types.ObjectId[];
   blockedContacts: Types.ObjectId[];
-  contactsRequestReceived: Types.ObjectId[];
-  contactsRequestSent: Types.ObjectId[];
+  requestReceived: Types.ObjectId[];
+  requestSent: Types.ObjectId[];
 }
 
 const UserSchema: Schema<UserI> = new Schema(
@@ -74,13 +74,13 @@ const UserSchema: Schema<UserI> = new Schema(
         ref: "users",
       },
     ],
-    contactsRequestReceived: [
+    requestReceived: [
       {
         type: Types.ObjectId,
         ref: "users",
       },
     ],
-    contactsRequestSent: [
+    requestSent: [
       {
         type: Types.ObjectId,
         ref: "users",
