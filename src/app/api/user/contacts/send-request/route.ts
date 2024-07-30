@@ -46,6 +46,11 @@ export const POST = apiAsyncHandler(
         status: STATUSCODES.NOT_FOUND,
         error: `Already request is sent`,
       });
+    } else if (otherUser.requestReceived.includes(user.id)) {
+      throwNewError({
+        status: STATUSCODES.NOT_FOUND,
+        error: `Already received the request`,
+      });
     } else {
       user.requestSent.push(id);
       otherUser.requestReceived.push(user.id);

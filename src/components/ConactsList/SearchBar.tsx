@@ -42,8 +42,6 @@ export const SearchBar = () => {
       type: "send" | "cancel" | "ignore" | "accept";
       _id: string;
     }) => {
-      console.log(data);
-
       const typesObject = {
         send: "send-request",
         cancel: "cancel-request",
@@ -56,10 +54,8 @@ export const SearchBar = () => {
         data: { id: data._id },
       });
     },
-    onSuccess: ({ data }) => {
-      GenerateAlert.onSuccess(data?.message);
-      refetch();
-    },
+    onSuccess: ({ data }) => GenerateAlert.onSuccess(data?.message),
+    onSettled: () => refetch(),
   });
 
   const handleRenderButton = useCallback(
