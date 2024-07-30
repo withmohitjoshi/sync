@@ -1,4 +1,9 @@
-import { CircularProgress, CircularProgressProps, LinearProgress, LinearProgressProps } from "@mui/material";
+import {
+  CircularProgress,
+  CircularProgressProps,
+  LinearProgress,
+  LinearProgressProps,
+} from "@mui/material";
 
 export const ButtonLoader = (props: CircularProgressProps) => {
   return (
@@ -23,5 +28,5 @@ export const Spinner = (props: CircularProgressProps) => {
 };
 
 export const LinearLoader = (props: LinearProgressProps) => {
-  return <LinearProgress color="secondary" {...props} />;
+  return <LinearProgress color="primary" {...props} />;
 };
