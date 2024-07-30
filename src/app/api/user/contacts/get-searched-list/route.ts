@@ -1,4 +1,5 @@
 import { dbConnect } from "@/dbConfig/dbConnnect";
+import { EMAIL_REGEX, USERNAME_REGEX } from "@/helpers/constants";
 import { STATUSCODES } from "@/helpers/enums";
 import { sendResponse, throwNewError } from "@/helpers/server-utils";
 import { apiAsyncHandler } from "@/lib/apiAsyncHandler";
@@ -35,11 +36,14 @@ export const GET = apiAsyncHandler(
       request.toString()
     );
 
+    const isSearchQueryEmail = EMAIL_REGEX.test(searchQuery);
     const users = await User.find({
-      username: {
-        $regex: new RegExp(searchQuery ?? "", "i"),
-      },
+      $or: [
+        { username: { $regex: new RegExp(searchQuery ?? "", "i") } },
+        { email: { $regex: new RegExp(searchQuery ?? "", "i") } },
+      ],
       _id: { $ne: userId },
+      ...(isSearchQueryEmail ? { findByEmail: true } : {}),
     }).select(["id", "username"]);
 
     const enhancedUsers = users.map((user) => ({
