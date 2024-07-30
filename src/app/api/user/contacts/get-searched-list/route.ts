@@ -39,6 +39,7 @@ export const GET = apiAsyncHandler(
       username: {
         $regex: new RegExp(searchQuery ?? "", "i"),
       },
+      _id: { $ne: userId },
     }).select(["id", "username"]);
 
     const enhancedUsers = users.map((user) => ({

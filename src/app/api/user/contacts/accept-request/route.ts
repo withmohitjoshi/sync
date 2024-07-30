@@ -39,7 +39,7 @@ export const POST = apiAsyncHandler(
     if (user.contacts.includes(id)) {
       throwNewError({
         status: STATUSCODES.NOT_FOUND,
-        error: `Already a connected with you`,
+        error: `Already connected with you`,
       });
     }
 

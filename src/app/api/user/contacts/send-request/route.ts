@@ -39,14 +39,14 @@ export const POST = apiAsyncHandler(
     if (user.contacts.includes(id)) {
       throwNewError({
         status: STATUSCODES.NOT_FOUND,
-        error: `Already a connected with you`,
+        error: `Already connected with you`,
       });
     } else if (user.requestSent.includes(id)) {
       throwNewError({
         status: STATUSCODES.NOT_FOUND,
-        error: `Already request is sent`,
+        error: `Request is sent already`,
       });
-    } else if (otherUser.requestReceived.includes(user.id)) {
+    } else if (user.requestReceived.includes(id)) {
       throwNewError({
         status: STATUSCODES.NOT_FOUND,
         error: `Already received the request`,

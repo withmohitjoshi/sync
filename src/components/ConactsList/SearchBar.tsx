@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { USERNAME_MAX_LENGTH } from "@/helpers/constants";
 import React, { useCallback, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -18,6 +19,21 @@ import { LinearLoader } from "../Loaders";
 import { debounceFn } from "@/helpers/client-utils";
 import theme from "@/theme/theme.config";
 import { GenerateAlert } from "@/providers/AlertProvider";
+
+type ContactListT = {
+  id: string;
+  username: string;
+  isContact: boolean;
+  isRequestReceived: boolean;
+  isRequestSent: boolean;
+};
+
+const typesObject = {
+  send: "send-request",
+  cancel: "cancel-request",
+  ignore: "ignore-request",
+  accept: "accept-request",
+};
 
 export const SearchBar = () => {
   const [search, setSearch] = useState("");
@@ -33,7 +49,7 @@ export const SearchBar = () => {
         method: "GET",
         url: `user/contacts/get-searched-list?search=${search}`,
       }),
-    select: (data) => data.data.data,
+    select: (data) => data.data.data as ContactListT[],
     enabled: Boolean(search),
   });
 
@@ -41,19 +57,12 @@ export const SearchBar = () => {
     mutationFn: (data: {
       type: "send" | "cancel" | "ignore" | "accept";
       _id: string;
-    }) => {
-      const typesObject = {
-        send: "send-request",
-        cancel: "cancel-request",
-        ignore: "ignore-request",
-        accept: "accept-request",
-      };
-      return apiClient({
+    }) =>
+      apiClient({
         method: "POST",
         url: `user/contacts/${typesObject[data.type]}`,
         data: { id: data._id },
-      });
-    },
+      }),
     onSuccess: ({ data }) => GenerateAlert.onSuccess(data?.message),
     onSettled: () => refetch(),
   });
@@ -96,7 +105,11 @@ export const SearchBar = () => {
 
   return (
     <Search>
-      <SearchIconWrapper>
+      <SearchIconWrapper
+        sx={{
+          pointerEvents: "none",
+        }}
+      >
         <SearchIcon />
       </SearchIconWrapper>
       <StyledInputBase
@@ -108,6 +121,17 @@ export const SearchBar = () => {
             : setSearch("")
         }
       />
+      {search && (
+        <SearchIconWrapper
+          sx={{
+            right: "0",
+            top: "0",
+          }}
+          onClick={() => setSearch("")}
+        >
+          <CloseRoundedIcon sx={{ cursor: "pointer" }} />
+        </SearchIconWrapper>
+      )}
       {search && (
         <SearchDropdown>
           {status === "pending" ? (
@@ -149,7 +173,7 @@ export const SearchBar = () => {
   );
 };
 
-const ListViewButton = styled(Button)(({ theme }) => ({
+const ListViewButton = styled(Button)(() => ({
   borderRadius: "50px",
 }));
 
@@ -167,7 +191,6 @@ const SearchIconWrapper = styled(Box)(({ theme }) => ({
   padding: theme.spacing(0, 2),
   height: "100%",
   position: "absolute",
-  pointerEvents: "none",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -181,6 +204,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
   },
 }));
+
 const SearchDropdown = styled(Box)(({ theme }) => ({
   position: "absolute",
   padding: theme.spacing(2),
@@ -188,6 +212,6 @@ const SearchDropdown = styled(Box)(({ theme }) => ({
   backgroundColor: alpha(theme.palette.background.paper, 0.5),
   borderRadius: theme.shape.borderRadius * 2,
   width: "100%",
-  minHeight: "50vh",
+  height: "45vh",
   overflowY: "auto",
 }));
