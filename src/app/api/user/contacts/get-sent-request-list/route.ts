@@ -19,9 +19,14 @@ export const GET = apiAsyncHandler(
       return;
     }
 
+    const data = await user.populate({
+      path: "requestSent",
+      select: ["id", "username"],
+    });
+
     return sendResponse({
       status: 200,
-      data: user,
+      data: data.requestSent,
     });
   })
 );
