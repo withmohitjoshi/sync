@@ -1,4 +1,4 @@
-import { jsonParse } from '@/helpers/functions';
+import { jsonParse } from '@/helpers/server-utils';
 import { NextRequest, NextResponse } from 'next/server';
 import { errorHandler } from './errorHandler';
 

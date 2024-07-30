@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { STATUSCODES } from "@/helpers/enums";
 import { decodeUserId, decrypt } from "./jwt";
-import { throwNewError } from "@/helpers/functions";
+import { throwNewError } from "@/helpers/server-utils";
 
 export const jwtVerifyHandler = (cb: any) => {
   return async (req: NextRequest) => {

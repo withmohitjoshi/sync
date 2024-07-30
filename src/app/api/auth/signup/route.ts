@@ -9,7 +9,7 @@ import {
   sendEmail,
   sendResponse,
   throwNewError,
-} from "@/helpers/functions";
+} from "@/helpers/server-utils";
 import { apiAsyncHandler } from "@/lib/apiAsyncHandler";
 import User from "@/models/User";
 import { NextRequest } from "next/server";

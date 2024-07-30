@@ -8,7 +8,7 @@ import {
   sendEmail,
   sendResponse,
   throwNewError,
-} from "@/helpers/functions";
+} from "@/helpers/server-utils";
 import { apiAsyncHandler } from "@/lib/apiAsyncHandler";
 import { encodeUserId, encrypt } from "@/lib/jwt";
 import User from "@/models/User";

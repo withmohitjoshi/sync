@@ -1,9 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { CreateDateTimeT, SendEmailT, SendResponseT } from './types';
-import { resend } from '@/lib/resend';
-import VerifyEmailOTPTemplate from '@/emails/VerifyEmailOTPTemplate';
+import "server-only";
+import { NextRequest, NextResponse } from "next/server";
+import { CreateDateTimeT, SendEmailT, SendResponseT } from "./types";
+import { resend } from "@/lib/resend";
 
-export const sendResponse = ({ title, data, status, message }: SendResponseT) => {
+export const sendResponse = ({
+  title,
+  data,
+  status,
+  message,
+}: SendResponseT) => {
   return NextResponse.json(
     {
       status,
@@ -63,7 +68,12 @@ export const sendEmail = async ({ to, subject, template }: SendEmailT) => {
   });
 };
 
-export const createDateTime = ({ seconds = 0, minutes = 0, hours = 0, days = 0 }: CreateDateTimeT) => {
+export const createDateTime = ({
+  seconds = 0,
+  minutes = 0,
+  hours = 0,
+  days = 0,
+}: CreateDateTimeT) => {
   const now = new Date();
   now.setSeconds(now.getSeconds() + seconds);
   now.setMinutes(now.getMinutes() + minutes);

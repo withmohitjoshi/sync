@@ -1,6 +1,6 @@
 import { dbConnect } from "@/dbConfig/dbConnnect";
 import { STATUSCODES } from "@/helpers/enums";
-import { parseBody, sendResponse, throwNewError } from "@/helpers/functions";
+import { parseBody, sendResponse, throwNewError } from "@/helpers/server-utils";
 import { apiAsyncHandler } from "@/lib/apiAsyncHandler";
 import { jwtVerifyHandler } from "@/lib/jwtVerifyHanlder";
 import User from "@/models/User";

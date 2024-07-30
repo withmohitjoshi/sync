@@ -3,7 +3,7 @@
 import { dbConnect } from "@/dbConfig/dbConnnect";
 import VerifyEmailOTPTemplate from "@/emails/VerifyEmailOTPTemplate";
 import { STATUSCODES } from "@/helpers/enums";
-import { createDateTime, generateOTP, sendEmail } from "@/helpers/functions";
+import { createDateTime, generateOTP, sendEmail } from "@/helpers/server-utils";
 import { decodeUserId, decrypt, encodeUserId, encrypt } from "@/lib/jwt";
 import User from "@/models/User";
 

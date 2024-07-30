@@ -16,10 +16,10 @@ export default function HomePage() {
       >
         <Toolbar />
         <Grid container sx={{ flexGrow: 1, width: "100%" }}>
-          <Grid item sm={3} flexGrow={1}>
+          <Grid item sm={4} flexGrow={1}>
             <ConactsList />
           </Grid>
-          <Grid item sm={9} flexGrow={1}>
+          <Grid item sm={8} flexGrow={1}>
             <ChatArea />
           </Grid>
         </Grid>

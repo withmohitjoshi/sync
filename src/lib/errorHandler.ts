@@ -1,5 +1,5 @@
 import { STATUSCODES } from "@/helpers/enums";
-import { sendResponse } from "@/helpers/functions";
+import { sendResponse } from "@/helpers/server-utils";
 
 export const errorHandler = ({ error, status, data }: any) => {
   switch (status) {

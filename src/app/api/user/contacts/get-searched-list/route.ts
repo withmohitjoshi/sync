@@ -1,6 +1,6 @@
 import { dbConnect } from "@/dbConfig/dbConnnect";
 import { STATUSCODES } from "@/helpers/enums";
-import { sendResponse, throwNewError } from "@/helpers/functions";
+import { sendResponse, throwNewError } from "@/helpers/server-utils";
 import { apiAsyncHandler } from "@/lib/apiAsyncHandler";
 import { jwtVerifyHandler } from "@/lib/jwtVerifyHanlder";
 import User from "@/models/User";
@@ -34,9 +34,6 @@ export const GET = apiAsyncHandler(
     const requestSentIds = user.requestSent.map((request) =>
       request.toString()
     );
-    const blockedContactsIds = user.blockedContacts.map((contact) =>
-      contact.toString()
-    );
 
     const users = await User.find({
       username: {
@@ -49,7 +46,6 @@ export const GET = apiAsyncHandler(
       isContact: contactsIds.includes(user.id),
       isRequestReceived: requestReceivedIds.includes(user.id),
       isRequestSent: requestSentIds.includes(user.id),
-      isBlockedContact: blockedContactsIds.includes(user.id),
     }));
 
     return sendResponse({
