@@ -7,7 +7,7 @@ export const ContactListItemBox = ({
   handleRenderActionButton,
 }: {
   contact: { username: string; _id: string };
-  isActionButton: boolean;
+  isActionButton?: boolean;
   handleRenderActionButton: (_: any) => React.ReactNode;
 }) => {
   const { username } = contact;

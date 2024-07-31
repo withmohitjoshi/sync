@@ -1,3 +1,4 @@
+import { contactsApiSchema } from "@/app/api/commonSchema";
 import { dbConnect } from "@/dbConfig/dbConnnect";
 import { STATUSCODES } from "@/helpers/enums";
 import { parseBody, sendResponse, throwNewError } from "@/helpers/server-utils";
@@ -6,14 +7,13 @@ import { jwtVerifyHandler } from "@/lib/jwtVerifyHanlder";
 import User from "@/models/User";
 import { Types } from "mongoose";
 import { NextRequest } from "next/server";
-import { z } from "zod";
 
 dbConnect();
 export const POST = apiAsyncHandler(
   jwtVerifyHandler(async (req: NextRequest, userId: any) => {
     const body = await parseBody(req);
 
-    const { success, data } = schema.safeParse(body);
+    const { success, data } = contactsApiSchema.safeParse(body);
 
     if (!success) {
       throwNewError({
@@ -59,9 +59,3 @@ export const POST = apiAsyncHandler(
     });
   })
 );
-
-const schema = z
-  .object({
-    id: z.string().min(1),
-  })
-  .strict();

@@ -6,11 +6,6 @@ import { ContactsList } from "./components/ContactsList";
 import { RequestReceivedList } from "./components/RequestReceivedList";
 import { RequestSentList } from "./components/RequestSentList";
 
-export type ContactListT = {
-  _id: string;
-  username: string;
-};
-
 const ViewRequests = () => {
   const [value, setValue] = React.useState(1);
   return (

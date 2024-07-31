@@ -17,7 +17,8 @@ import { debounceFn } from "@/helpers/client-utils";
 import { GenerateAlert } from "@/providers/AlertProvider";
 import { LinearLoader } from "@/components";
 import { requestOptionsTypesLookup } from "../constants";
-import { ContactListItemBox } from "@/components/ContactListItemBox";
+import { ContactListItemBox } from "@/components";
+import { SearchedContactListApiResponseT } from "../types";
 
 export const SearchBar = () => {
   const [search, setSearch] = useState("");
