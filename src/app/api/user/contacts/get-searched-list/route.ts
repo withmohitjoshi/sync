@@ -1,5 +1,5 @@
 import { dbConnect } from "@/dbConfig/dbConnnect";
-import { EMAIL_REGEX, USERNAME_REGEX } from "@/helpers/constants";
+import { EMAIL_REGEX } from "@/helpers/constants";
 import { STATUSCODES } from "@/helpers/enums";
 import { sendResponse, throwNewError } from "@/helpers/server-utils";
 import { apiAsyncHandler } from "@/lib/apiAsyncHandler";
@@ -28,13 +28,13 @@ export const GET = apiAsyncHandler(
       return;
     }
 
-    const contactsIds = user.contacts.map((contact) => contact.toString());
-    const requestReceivedIds = user.requestReceived.map((request) =>
-      request.toString()
+    const { contacts, requestReceived, requestSent } = user;
+
+    const contactsIds = contacts.map(({ userId }) => userId.toString());
+    const requestReceivedIds = requestReceived.map(({ userId }) =>
+      userId.toString()
     );
-    const requestSentIds = user.requestSent.map((request) =>
-      request.toString()
-    );
+    const requestSentIds = requestSent.map(({ userId }) => userId.toString());
 
     const isSearchQueryEmail = EMAIL_REGEX.test(searchQuery);
     const users = await User.find({

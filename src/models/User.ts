@@ -12,9 +12,18 @@ export interface UserI extends Document {
   verifyCodeExpiry: Date;
   forgotPasswordToken: string;
   forgotPasswordTokenExpiry: Date;
-  contacts: Types.ObjectId[];
-  requestReceived: Types.ObjectId[];
-  requestSent: Types.ObjectId[];
+  contacts: {
+    userId: Types.ObjectId;
+    createdAt?: Date;
+  }[];
+  requestReceived: {
+    userId: Types.ObjectId;
+    createdAt?: Date;
+  }[];
+  requestSent: {
+    userId: Types.ObjectId;
+    createdAt?: Date;
+  }[];
 }
 
 const UserSchema: Schema<UserI> = new Schema(
@@ -63,20 +72,44 @@ const UserSchema: Schema<UserI> = new Schema(
     },
     contacts: [
       {
-        type: Types.ObjectId,
-        ref: "users",
+        userId: {
+          type: Types.ObjectId,
+          ref: "users",
+          required: true,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now(),
+          required: false,
+        },
       },
     ],
     requestReceived: [
       {
-        type: Types.ObjectId,
-        ref: "users",
+        userId: {
+          type: Types.ObjectId,
+          ref: "users",
+          required: true,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now(),
+          required: false,
+        },
       },
     ],
     requestSent: [
       {
-        type: Types.ObjectId,
-        ref: "users",
+        userId: {
+          type: Types.ObjectId,
+          ref: "users",
+          required: true,
+        },
+        createdAt: {
+          type: Date,
+          default: Date.now(),
+          required: false,
+        },
       },
     ],
   },

@@ -61,39 +61,44 @@ export const SearchBar = () => {
     (contact: SearchedContactListApiResponseT): React.ReactNode => {
       const { _id, isContact, isRequestReceived, isRequestSent } = contact;
       if (isContact) {
-        return <ListActionButton>Chat</ListActionButton>;
+        return <Button variant="text">Chat</Button>;
       }
 
       if (isRequestSent) {
         return (
-          <ListActionButton
+          <Button
+            variant="text"
             color="error"
             onClick={() => mutate({ type: "cancel", _id })}
           >
             Cancel
-          </ListActionButton>
+          </Button>
         );
       }
       if (isRequestReceived) {
         return (
           <Box sx={{ display: "flex", gap: 2 }}>
-            <ListActionButton onClick={() => mutate({ type: "accept", _id })}>
+            <Button
+              variant="text"
+              onClick={() => mutate({ type: "accept", _id })}
+            >
               Accept
-            </ListActionButton>
-            <ListActionButton
+            </Button>
+            <Button
+              variant="text"
               color="secondary"
               onClick={() => mutate({ type: "ignore", _id })}
             >
               Ignore
-            </ListActionButton>
+            </Button>
           </Box>
         );
       }
       if (!isContact) {
         return (
-          <ListActionButton onClick={() => mutate({ type: "send", _id })}>
+          <Button variant="text" onClick={() => mutate({ type: "send", _id })}>
             Add
-          </ListActionButton>
+          </Button>
         );
       }
     },
@@ -149,10 +154,6 @@ export const SearchBar = () => {
     </SearchBox>
   );
 };
-
-const ListActionButton = styled(Button)(() => ({
-  borderRadius: "50px",
-}));
 
 const SearchBox = styled(Box)(({ theme }) => ({
   width: "100%",

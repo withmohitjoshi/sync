@@ -36,7 +36,10 @@ export const POST = apiAsyncHandler(
       return;
     }
 
-    if (user.contacts.includes(id)) {
+    const { contacts } = user;
+    const contactsIds = contacts.map(({ userId }) => userId.toString());
+
+    if (contactsIds.includes(id.toString())) {
       throwNewError({
         status: STATUSCODES.NOT_FOUND,
         error: `Already connected with you`,
@@ -44,10 +47,10 @@ export const POST = apiAsyncHandler(
     }
 
     const userIndex = user.requestSent.findIndex(
-      (id) => id.toString() === body.id
+      ({ userId }) => userId.toString() === id.toString()
     );
     const otherUserIndex = otherUser.requestReceived.findIndex(
-      (id) => id.toString() === user.id
+      ({ userId }) => userId.toString() === user.id
     );
 
     if (userIndex > -1) {

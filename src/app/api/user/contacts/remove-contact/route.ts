@@ -36,7 +36,10 @@ export const POST = apiAsyncHandler(
       return;
     }
 
-    if (!user.contacts.includes(id)) {
+    const { contacts } = user;
+    const contactsIds = contacts.map(({ userId }) => userId.toString());
+
+    if (!contactsIds.includes(id.toString())) {
       throwNewError({
         status: STATUSCODES.NOT_FOUND,
         error: `User is not in your contacts`,
@@ -44,10 +47,10 @@ export const POST = apiAsyncHandler(
     }
 
     const userIndex = user.contacts.findIndex(
-      (id) => id.toString() === body.id
+      ({ userId }) => userId.toString() === id.toString()
     );
     const otherUserIndex = user.contacts.findIndex(
-      (id) => id.toString() === user.id
+      ({ userId }) => userId.toString() === user.id
     );
 
     user.contacts.splice(userIndex, 1);

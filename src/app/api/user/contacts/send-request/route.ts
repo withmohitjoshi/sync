@@ -36,24 +36,35 @@ export const POST = apiAsyncHandler(
       return;
     }
 
-    if (user.contacts.includes(id)) {
+    const { contacts, requestSent, requestReceived } = user;
+    const contactsIds = contacts.map(({ userId }) => userId.toString());
+    const requestReceivedIds = requestReceived.map(({ userId }) =>
+      userId.toString()
+    );
+    const requestSentIds = requestSent.map(({ userId }) => userId.toString());
+
+    if (contactsIds.includes(id.toString())) {
       throwNewError({
         status: STATUSCODES.NOT_FOUND,
         error: `Already connected with you`,
       });
-    } else if (user.requestSent.includes(id)) {
+    } else if (requestReceivedIds.includes(id.toString())) {
       throwNewError({
         status: STATUSCODES.NOT_FOUND,
         error: `Request is sent already`,
       });
-    } else if (user.requestReceived.includes(id)) {
+    } else if (requestSentIds.includes(id.toString())) {
       throwNewError({
         status: STATUSCODES.NOT_FOUND,
         error: `Already received the request`,
       });
     } else {
-      user.requestSent.push(id);
-      otherUser.requestReceived.push(user.id);
+      user.requestSent.push({
+        userId: id,
+      });
+      otherUser.requestReceived.push({
+        userId: user.id,
+      });
       await Promise.all([user.save(), otherUser.save()]);
       return sendResponse({
         status: 200,

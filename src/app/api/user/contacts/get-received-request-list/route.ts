@@ -20,13 +20,17 @@ export const GET = apiAsyncHandler(
     }
 
     const data = await user.populate({
-      path: "requestReceived",
+      path: "requestReceived.userId",
       select: ["id", "username"],
     });
 
     return sendResponse({
       status: 200,
-      data: data.requestReceived,
+      data: data.requestReceived.map(({ userId, createdAt }: any) => ({
+        _id: userId._id.toString(),
+        username: userId.username,
+        createdAt,
+      })),
     });
   })
 );
