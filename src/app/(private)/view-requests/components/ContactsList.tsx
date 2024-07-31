@@ -19,7 +19,7 @@ export const ContactsList = () => {
         url: "user/contacts/get-contacts-list",
       }),
     select: (data) => data.data.data as ContactListApiResponseT[],
-    refetchOnMount: true,
+    refetchOnMount: "always",
   });
 
   const { mutate, isPending } = useMutation({

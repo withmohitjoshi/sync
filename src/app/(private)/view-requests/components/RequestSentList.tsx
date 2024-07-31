@@ -19,7 +19,7 @@ export const RequestSentList = () => {
         url: "user/contacts/get-sent-request-list",
       }),
     select: (data) => data.data.data as ContactListApiResponseT[],
-    refetchOnMount: true,
+    refetchOnMount: "always",
   });
 
   const { mutate, isPending } = useMutation({
