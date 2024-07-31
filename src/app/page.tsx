@@ -1,5 +1,5 @@
-import { ChatArea, ConactsList, Header } from "@/components";
 import { Box, Grid, Toolbar } from "@mui/material";
+import { ChatArea, Header, RecentChats } from "./components";
 
 export default function HomePage() {
   return (
@@ -17,7 +17,7 @@ export default function HomePage() {
         <Toolbar />
         <Grid container sx={{ flexGrow: 1, width: "100%" }}>
           <Grid item sm={4} flexGrow={1}>
-            <ConactsList />
+            <RecentChats />
           </Grid>
           <Grid item sm={8} flexGrow={1}>
             <ChatArea />

@@ -55,7 +55,15 @@ export const GET = apiAsyncHandler(
 
     return sendResponse({
       status: 200,
-      data: enhancedUsers,
+      data: [
+        ...enhancedUsers,
+        ...enhancedUsers,
+        ...enhancedUsers,
+        ...enhancedUsers,
+        ...enhancedUsers,
+        ...enhancedUsers,
+        ...enhancedUsers,
+      ],
     });
   })
 );

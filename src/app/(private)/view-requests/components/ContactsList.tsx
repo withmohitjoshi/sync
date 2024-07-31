@@ -24,6 +24,7 @@ export const ContactsList = () => {
         url: "user/contacts/get-contacts-list",
       }),
     select: (data) => data.data.data as ContactListT[],
+    refetchOnMount:true
   });
 
   const { mutate, isPending } = useMutation({

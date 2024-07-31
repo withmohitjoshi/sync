@@ -24,6 +24,7 @@ export const RequestSentList = () => {
         url: "user/contacts/get-sent-request-list",
       }),
     select: (data) => data.data.data as ContactListT[],
+    refetchOnMount:true
   });
 
   const { mutate, isPending } = useMutation({

@@ -11,6 +11,7 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ContactListT } from "../page";
 import { GenerateAlert } from "@/providers/AlertProvider";
+import { dispatchRefetchQuery } from "@/helpers/customevents";
 
 const typesObject = {
   ignore: "ignore-request",
@@ -21,7 +22,6 @@ export const RequestReceivedList = () => {
   const {
     data: receivedRequestList = [],
     status,
-    refetch,
   } = useQuery({
     queryKey: ["get-received-request-list"],
     queryFn: () =>
@@ -30,6 +30,7 @@ export const RequestReceivedList = () => {
         url: "user/contacts/get-received-request-list",
       }),
     select: (data) => data.data.data as ContactListT[],
+    refetchOnMount:true
   });
 
   const { mutate, isPending } = useMutation({
@@ -40,7 +41,9 @@ export const RequestReceivedList = () => {
         data: { id: data._id },
       }),
     onSuccess: ({ data }) => GenerateAlert.onSuccess(data?.message),
-    onSettled: () => refetch(),
+    onSettled: () => {
+      dispatchRefetchQuery(["get-contacts-list", "get-received-request-list"]);
+    },
   });
 
   if (status === "pending" || isPending) return <LinearLoader sx={{ mt: 2 }} />;
