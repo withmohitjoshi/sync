@@ -17,8 +17,8 @@ import User from "@/models/User";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
-dbConnect();
 export const POST = apiAsyncHandler(async (req: NextRequest) => {
+  dbConnect();
   const body = await parseBody(req);
 
   const { success, data } = loginSchema.safeParse(body);

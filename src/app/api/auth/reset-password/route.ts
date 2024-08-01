@@ -8,8 +8,8 @@ import User from "@/models/User";
 import { NextRequest } from "next/server";
 import bcrypt from "bcrypt";
 
-dbConnect();
 export const POST = apiAsyncHandler(async (req: NextRequest) => {
+  dbConnect();
   let token = req.headers.get("Authorization");
 
   token = token?.split(" ")?.[1] ?? null;

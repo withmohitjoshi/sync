@@ -8,9 +8,9 @@ import User from "@/models/User";
 import { Types } from "mongoose";
 import { NextRequest } from "next/server";
 
-dbConnect();
 export const POST = apiAsyncHandler(
   jwtVerifyHandler(async (req: NextRequest, userId: any) => {
+    dbConnect();
     const body = await parseBody(req);
 
     const { success, data } = contactsApiSchema.safeParse(body);

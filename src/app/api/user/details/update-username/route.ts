@@ -7,9 +7,9 @@ import { jwtVerifyHandler } from "@/lib/jwtVerifyHanlder";
 import User from "@/models/User";
 import { NextRequest } from "next/server";
 
-dbConnect();
 export const PUT = apiAsyncHandler(
   jwtVerifyHandler(async (req: NextRequest, userId: any) => {
+    dbConnect();
     const body = await parseBody(req);
 
     const { success, data } = changeUsernameSchema.safeParse(body);

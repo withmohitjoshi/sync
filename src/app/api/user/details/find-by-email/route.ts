@@ -7,9 +7,9 @@ import User from "@/models/User";
 import { NextRequest } from "next/server";
 import { findByEmailSchema } from "@/app/(private)/myaccount/constants";
 
-dbConnect();
 export const PUT = apiAsyncHandler(
   jwtVerifyHandler(async (req: NextRequest, userId: any) => {
+    dbConnect();
     const body = await parseBody(req);
 
     const { success, data } = findByEmailSchema.safeParse(body);

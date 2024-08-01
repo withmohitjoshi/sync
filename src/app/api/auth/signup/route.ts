@@ -16,8 +16,8 @@ import { NextRequest } from "next/server";
 import { encodeUserId, encrypt } from "@/lib/jwt";
 import VerifyEmailOTPTemplate from "@/emails/VerifyEmailOTPTemplate";
 
-dbConnect();
 export const POST = apiAsyncHandler(async (req: NextRequest) => {
+  dbConnect();
   const body = await parseBody(req);
 
   const { success, data } = signupSchema.safeParse(body);

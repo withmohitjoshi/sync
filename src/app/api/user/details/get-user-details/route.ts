@@ -6,9 +6,9 @@ import { jwtVerifyHandler } from "@/lib/jwtVerifyHanlder";
 import User from "@/models/User";
 import { NextRequest } from "next/server";
 
-dbConnect();
 export const GET = apiAsyncHandler(
   jwtVerifyHandler(async (_: NextRequest, userId: any) => {
+    dbConnect();
     const user = await User.findById(userId);
 
     if (!user) {

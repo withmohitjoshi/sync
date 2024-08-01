@@ -7,8 +7,8 @@ import { decodeUserId, decrypt } from "@/lib/jwt";
 import User from "@/models/User";
 import { NextRequest } from "next/server";
 
-dbConnect();
 export const POST = apiAsyncHandler(async (req: NextRequest) => {
+  dbConnect();
   let token = req.headers.get("Authorization");
 
   token = token?.split(" ")?.[1] ?? null;
