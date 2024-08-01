@@ -14,8 +14,6 @@ export const metadata: Metadata = {
   description: "Get synced with you friends",
 };
 
-const uri = `${process.env.NEXT_PUBLIC_SERVER_BASEURL}`;
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -25,7 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <QueryClientProvider>
-          <SocketContextProvider uri={uri}>
+          <SocketContextProvider>
             <AlertProvider>
               <CustomEventProvider>
                 <AppRouterCacheProvider>
