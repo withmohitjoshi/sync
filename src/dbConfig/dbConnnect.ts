@@ -12,11 +12,11 @@ export const dbConnect = async (): Promise<void> => {
     return;
   }
   try {
-    if (!process.env.MONGO_URI) {
+    if (!process.env.MONGODB_URI) {
       console.log('Database uri not found');
       process.exit(1);
     }
-    const db = await mongoose.connect(process.env.MONGO_URI, {
+    const db = await mongoose.connect(process.env.MONGODB_URI, {
       dbName: 'sync',
     });
     connection.isConnected = db.connections[0].readyState;
