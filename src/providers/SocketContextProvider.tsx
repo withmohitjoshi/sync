@@ -13,6 +13,11 @@ export const SocketContextProvider = ({
 
   useEffect(() => {
     if (!socketRef.current) {
+      console.log(
+        "----------",
+        `${process.env.NEXT_PUBLIC_SITE_BASEURL}/api/socket`
+      );
+
       fetch(`${process.env.NEXT_PUBLIC_SITE_BASEURL}/api/socket`);
       const connection = io();
 
