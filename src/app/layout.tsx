@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: "Sync",
   description: "Get synced with you friends",
 };
-
+// pages are here
 export default function RootLayout({
   children,
 }: Readonly<{
