@@ -2,6 +2,8 @@ const { createServer } = require("node:http");
 const { Server } = require("socket.io");
 require("dotenv").config();
 
+const port = process.env.PORT || 3001;
+
 const httpServer = createServer();
 const io = new Server(httpServer);
 
@@ -13,6 +15,6 @@ io.on("connection", (socket) => {
   });
 });
 
-httpServer.listen(3001, () => {
-  console.log(`server running at ${process.env.NEXT_PUBLIC_SERVER_BASEURL}`);
+httpServer.listen(port, () => {
+  console.log(`server running at ${port}`);
 });
