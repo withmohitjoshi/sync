@@ -1,23 +1,9 @@
-const express = require("express");
 const { createServer } = require("node:http");
 const { Server } = require("socket.io");
 require("dotenv").config();
 
-const port = process.env.SERVER_PORT;
-
-const app = express();
-const server = createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: [process.env.MODE === 'DEV' ? `${process.env.SITE_URL}:${process.env.SITE_PORT}` : `${process.env.SITE_URL}`],
-  },
-});
-
-app.get("/", (_, res) => {
-  res.json({
-    msg: "Hello world",
-  });
-});
+const httpServer = createServer();
+const io = new Server(httpServer);
 
 io.on("connection", (socket) => {
   console.log("Client connected successfully with socket id:", socket.id);
@@ -27,6 +13,6 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(port, () => {
-  console.log(`server running at port ${port}`);
+httpServer.listen(3001, () => {
+  console.log(`server running at ${process.env.NEXT_PUBLIC_SERVER_BASEURL}`);
 });
