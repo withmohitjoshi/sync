@@ -1,9 +1,11 @@
-const { createServer } = require("node:http");
-const { Server } = require("socket.io");
 require("dotenv").config();
+const { createServer } = require("node:http");
+const dbConnect = require("./dbConfig/dbConnect");
 
+const { Server } = require("socket.io");
+
+let db;
 const port = process.env.PORT || 3001;
-
 const httpServer = createServer();
 const io = new Server(httpServer);
 
@@ -15,6 +17,7 @@ io.on("connection", (socket) => {
   });
 });
 
-httpServer.listen(port, () => {
+httpServer.listen(port, async () => {
+  db = await dbConnect();
   console.log(`server running at ${port}`);
 });
