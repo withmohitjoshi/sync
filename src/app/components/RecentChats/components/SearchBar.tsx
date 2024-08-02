@@ -19,8 +19,10 @@ import { LinearLoader } from "@/components";
 import { requestOptionsTypesLookup } from "../constants";
 import { ContactListItemBox } from "@/components";
 import { SearchedContactListApiResponseT } from "../types";
+import { useChat } from "@/hooks";
 
 export const SearchBar = () => {
+  const { setState } = useChat();
   const [search, setSearch] = useState("");
 
   const {
@@ -61,7 +63,17 @@ export const SearchBar = () => {
     (contact: SearchedContactListApiResponseT): React.ReactNode => {
       const { _id, isContact, isRequestReceived, isRequestSent } = contact;
       if (isContact) {
-        return <Button variant="text">Chat</Button>;
+        return (
+          <Button
+            variant="text"
+            onClick={() => {
+              setState((prev: any) => ({ ...prev, currentChatWith: _id }));
+              setSearch("");
+            }}
+          >
+            Chat
+          </Button>
+        );
       }
 
       if (isRequestSent) {
