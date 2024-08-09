@@ -20,6 +20,7 @@ import { requestOptionsTypesLookup } from "../constants";
 import { ContactListItemBox } from "@/components";
 import { SearchedContactListApiResponseT } from "../types";
 import { useChat } from "@/hooks";
+import axios from "axios";
 
 export const SearchBar = () => {
   const { setState } = useChat();
@@ -59,6 +60,17 @@ export const SearchBar = () => {
     onSettled: () => refetch(),
   });
 
+  const { mutate: mutateCreateChat } = useMutation({
+    mutationFn: ({ _id }: { _id: string }) =>
+      axios({
+        baseURL: `${process.env.NEXT_PUBLIC_SITE_BASEURL}/api/`,
+        method: "POST",
+        url: `chat/create`,
+        data: { id: _id },
+      }),
+    onError: () => GenerateAlert.onError("Something went wrong"),
+  });
+
   const handleRenderActionButton = useCallback(
     (contact: SearchedContactListApiResponseT): React.ReactNode => {
       const { _id, isContact, isRequestReceived, isRequestSent } = contact;
@@ -67,8 +79,7 @@ export const SearchBar = () => {
           <Button
             variant="text"
             onClick={() => {
-              setState((prev: any) => ({ ...prev, currentChatWith: _id }));
-              setSearch("");
+              mutateCreateChat({ _id });
             }}
           >
             Chat
@@ -114,7 +125,7 @@ export const SearchBar = () => {
         );
       }
     },
-    [mutate]
+    [mutate, mutateCreateChat]
   );
 
   const isQueryLoading = [isLoading, isFetching].some((l) => l);

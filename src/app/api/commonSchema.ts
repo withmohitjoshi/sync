@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const contactsApiSchema = z
+export const userIdApiSchema = z
   .object({
     id: z.string().min(1),
   })

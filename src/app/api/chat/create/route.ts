@@ -1,12 +1,13 @@
-import { userIdApiSchema } from "@/app/api/commonSchema";
 import { dbConnect } from "@/dbConfig/dbConnnect";
 import { STATUSCODES } from "@/helpers/enums";
 import { parseBody, sendResponse, throwNewError } from "@/helpers/server-utils";
 import { apiAsyncHandler } from "@/lib/apiAsyncHandler";
 import { jwtVerifyHandler } from "@/lib/jwtVerifyHanlder";
-import User from "@/models/User";
-import { Types } from "mongoose";
 import { NextRequest } from "next/server";
+import { userIdApiSchema } from "../../commonSchema";
+import { Types } from "mongoose";
+import Chat from "@/models/Chat";
+import User from "@/models/User";
 
 export const POST = apiAsyncHandler(
   jwtVerifyHandler(async (req: NextRequest, userId: any) => {
@@ -23,42 +24,32 @@ export const POST = apiAsyncHandler(
       return;
     }
 
-    const id = data.id as unknown as Types.ObjectId;
-
     const user = await User.findById(userId);
-    const otherUser = await User.findById(id);
 
-    if (!user || !otherUser) {
+    if (!user) {
       throwNewError({
         status: STATUSCODES.NOT_FOUND,
         error: `User not found`,
       });
       return;
     }
+    const id = data.id as unknown as Types.ObjectId;
 
-    const { contacts } = user;
-    const contactsIds = contacts.map(({ userId }) => userId.toString());
+    const isAlreadyCreated = await Chat.find({
+      $and: [{ from: userId }, { to: id }],
+    });
 
-    if (!contactsIds.includes(id.toString())) {
-      throwNewError({
-        status: STATUSCODES.NOT_FOUND,
-        error: `User is not in your contacts`,
+    if (!isAlreadyCreated || isAlreadyCreated.length === 0) {
+      const newChat = new Chat({
+        messages: [],
+        from: userId,
+        to: id,
       });
+      await newChat.save();
     }
 
-    const userIndex = user.contacts.findIndex(
-      ({ userId }) => userId.toString() === id.toString()
-    );
-    const otherUserIndex = user.contacts.findIndex(
-      ({ userId }) => userId.toString() === user.id
-    );
-
-    user.contacts.splice(userIndex, 1);
-    otherUser.contacts.splice(otherUserIndex, 1);
-    await Promise.all([user.save(), otherUser.save()]);
     return sendResponse({
       status: 200,
-      message: "Contact removed successfully",
     });
   })
 );

@@ -58,9 +58,15 @@ export const ChatArea = () => {
             flexGrow: 1,
             overflowY: "auto",
             backgroundColor: alpha(theme.palette.background.paper, 0.5),
+            display: "flex",
+            flexDirection: "column-reverse",
           }}
         >
-          <XYZR />
+          {Array(20)
+            .fill(1)
+            .map((_, i) => {
+              return i % 2 === 0 ? <RightMessage /> : <LeftMessage />;
+            })}
         </Box>
         <Box
           sx={{
@@ -82,7 +88,7 @@ export const ChatArea = () => {
   );
 };
 
-const XYZR = () => (
+const RightMessage = () => (
   <Box
     sx={{
       alignSelf: "flex-end",
@@ -91,6 +97,23 @@ const XYZR = () => (
       padding: theme.spacing(1),
       margin: theme.spacing(1),
       backgroundColor: alpha(theme.palette.success.dark, 0.5),
+      borderRadius: theme.shape.borderRadius / 4,
+      color: theme.palette.text.primary,
+      height: "fit-content",
+    }}
+  >
+    this is my cat say hello to her
+  </Box>
+);
+const LeftMessage = () => (
+  <Box
+    sx={{
+      alignSelf: "flex-start",
+      width: "fit-content",
+      maxWidth: "50%",
+      padding: theme.spacing(1),
+      margin: theme.spacing(1),
+      backgroundColor: alpha(theme.palette.info.dark, 0.5),
       borderRadius: theme.shape.borderRadius / 4,
       color: theme.palette.text.primary,
       height: "fit-content",

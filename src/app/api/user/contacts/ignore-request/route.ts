@@ -1,4 +1,4 @@
-import { contactsApiSchema } from "@/app/api/commonSchema";
+import { userIdApiSchema } from "@/app/api/commonSchema";
 import { dbConnect } from "@/dbConfig/dbConnnect";
 import { STATUSCODES } from "@/helpers/enums";
 import { parseBody, sendResponse, throwNewError } from "@/helpers/server-utils";
@@ -13,7 +13,7 @@ export const POST = apiAsyncHandler(
     dbConnect();
     const body = await parseBody(req);
 
-    const { success, data } = contactsApiSchema.safeParse(body);
+    const { success, data } = userIdApiSchema.safeParse(body);
 
     if (!success) {
       throwNewError({
