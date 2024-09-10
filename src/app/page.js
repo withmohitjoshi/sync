@@ -1,10 +1,25 @@
 "use client";
+import { useState } from "react";
+import Header from "./components/Header";
+import SearchUserModal from "./components/SearchUserModal";
+
 export default function Home() {
-  return <div className="text-center text-gray-100">Hello, world</div>;
+  const [query, setQuery] = useState("");
+  const [openSearchUserModal, setOpenSearchUserModal] = useState(false);
+  
+  const toggleOpenSearchUserModal = () => setOpenSearchUserModal((p) => !p);
+  return (
+    <div>
+      <Header toggleOpenSearchUserModal={toggleOpenSearchUserModal} />
+      <SearchUserModal
+        isOpen={openSearchUserModal}
+        onClose={toggleOpenSearchUserModal}
+      />
+    </div>
+  );
 }
 
-
-  /* <button
+/* <button
 onClick={() => {
   for (let i = 1; i <= 78; i++) {
     // fetch("api/auth/fakesignup", {
@@ -26,4 +41,3 @@ onClick={() => {
 >
 Make fake users
 </button> */
-

@@ -12,7 +12,7 @@ const MyAccountPage = () => {
   const { data = {}, isLoading } = useGetDetails();
   const { email, username } = data;
   return (
-    <MiddleBox headingName={"Manage account"}>
+    <MiddleBox headingName={"Manage account"} showBackButton>
       <div className="w-full space-y-6 text-gray-300">
         {isLoading ? (
           <CenterSinner />

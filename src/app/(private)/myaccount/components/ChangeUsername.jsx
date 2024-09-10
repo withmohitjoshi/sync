@@ -12,6 +12,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiClient } from "../../../../lib/interceptor";
 import React, { useEffect } from "react";
 import { dispatchRefetchQuery } from "../../../../helpers/events";
+import { USERNAME_MAX_LENGTH } from "@/helpers/constants";
 
 const ChangeUsername = ({ username = "" }) => {
   const {
@@ -54,6 +55,7 @@ const ChangeUsername = ({ username = "" }) => {
             <TextInput
               placeholder="Username"
               error={errors.username?.message}
+              maxLength={USERNAME_MAX_LENGTH}
               {...field}
             />
           )}
