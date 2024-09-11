@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { MessageCircle } from "lucide-react";
 import React, { useState } from "react";
 
-const MessageButton = () => {
+const MessageUserModal = () => {
   const [openConnectionsModal, setOpenConnectionsModal] = useState(false);
   const { isLoading, data = [] } = useQuery({
     queryKey: ["connections-list"],
@@ -80,4 +80,4 @@ const MessageButton = () => {
   );
 };
 
-export default MessageButton;
+export default MessageUserModal;

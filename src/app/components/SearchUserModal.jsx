@@ -10,7 +10,7 @@ import { debounceFn } from "@/helpers/functions";
 import CenterSinner from "@/components/Loaders/CenterSinner";
 import Avatar from "@/components/Avatar";
 import SimpleButton from "@/components/Button/SimpleButton";
-import { Search } from "lucide-react";
+import { Plus } from "lucide-react";
 
 export default function SearchUserModal() {
   const [query, setQuery] = useState("");
@@ -52,7 +52,7 @@ export default function SearchUserModal() {
 
   return (
     <>
-      <Search size={20} onClick={toggleOpenSearchUserModal} />
+      <Plus size={20} onClick={toggleOpenSearchUserModal} />
       <Modal
         isOpen={isOpen}
         onClose={() => {

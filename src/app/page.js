@@ -1,15 +1,12 @@
 "use client";
-import { useState } from "react";
 import Header from "./components/Header";
-import SearchUserModal from "./components/SearchUserModal";
-import { MessageCircle } from "lucide-react";
-import MessageButton from "./components/MessageButton";
+import MessageUserModal from "./components/MessageUserModal";
 
 export default function Home() {
   return (
     <div>
       <Header />
-      <MessageButton />
+      <MessageUserModal />
     </div>
   );
 }
