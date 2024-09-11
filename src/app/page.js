@@ -2,19 +2,14 @@
 import { useState } from "react";
 import Header from "./components/Header";
 import SearchUserModal from "./components/SearchUserModal";
+import { MessageCircle } from "lucide-react";
+import MessageButton from "./components/MessageButton";
 
 export default function Home() {
-  const [query, setQuery] = useState("");
-  const [openSearchUserModal, setOpenSearchUserModal] = useState(false);
-  
-  const toggleOpenSearchUserModal = () => setOpenSearchUserModal((p) => !p);
   return (
     <div>
-      <Header toggleOpenSearchUserModal={toggleOpenSearchUserModal} />
-      <SearchUserModal
-        isOpen={openSearchUserModal}
-        onClose={toggleOpenSearchUserModal}
-      />
+      <Header />
+      <MessageButton />
     </div>
   );
 }

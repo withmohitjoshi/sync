@@ -22,6 +22,15 @@ const MyAccountPage = () => {
             <p className="text-gray-400 text-center">{email}</p>
             <ChangeUsername username={username} />
             <Link
+              href={"/connections"}
+              className="flex items-center justify-between"
+            >
+              <span>My Connections</span>
+              <span className="cursor-pointer">
+                <ChevronRight />
+              </span>
+            </Link>
+            <Link
               href={"/change-password"}
               className="flex items-center justify-between"
             >

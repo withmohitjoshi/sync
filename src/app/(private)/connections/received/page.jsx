@@ -4,7 +4,6 @@ import useGetConnectionsList from "../../../../hook/useGetConnectionsList";
 import ConnectionListItem from "../components/ConnectionListItem";
 import SimpleButton from "../../../../components/Button/SimpleButton";
 import CenterSinner from "../../../../components/Loaders/CenterSinner";
-import { useCallback } from "react";
 import { apiClient } from "../../../../lib/interceptor";
 import { dispatchRefetchQuery } from "../../../../helpers/events";
 
@@ -15,11 +14,6 @@ const Received = () => {
     data = [],
   } = useGetConnectionsList("received");
 
-  const onSuccess = useCallback(
-    () => dispatchRefetchQuery("received-list"),
-    []
-  );
-
   const { mutate: mutateAccept } = useMutation({
     mutationKey: ["accept"],
     mutationFn: (data) =>
@@ -28,7 +22,7 @@ const Received = () => {
         url: "connections/accept",
         data,
       }),
-    onSuccess,
+    onSuccess: () => dispatchRefetchQuery("connections-list"),
   });
 
   const { mutate: mutateReject } = useMutation({
@@ -39,7 +33,7 @@ const Received = () => {
         url: "connections/reject",
         data,
       }),
-    onSuccess,
+    onSuccess: () => dispatchRefetchQuery("received-list"),
   });
 
   if (isLoading || isFetching) return <CenterSinner />;
