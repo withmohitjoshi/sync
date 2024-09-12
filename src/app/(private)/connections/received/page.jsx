@@ -22,7 +22,10 @@ const Received = () => {
         url: "connections/accept",
         data,
       }),
-    onSuccess: () => dispatchRefetchQuery("connections-list"),
+    onSuccess: () => {
+      dispatchRefetchQuery("received-list")
+      dispatchRefetchQuery("connections-list")
+    }
   });
 
   const { mutate: mutateReject } = useMutation({
