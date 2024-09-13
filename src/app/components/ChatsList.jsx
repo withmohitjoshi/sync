@@ -21,24 +21,6 @@ const ChatsList = () => {
             ))}
         </div>
       </div>
-      {/* <div className="flex flex-col gap-2 mt-3 space-y-2 overflow-y-auto min-h-full">
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-        <Tile />
-      </div> */}
     </div>
   );
 };
