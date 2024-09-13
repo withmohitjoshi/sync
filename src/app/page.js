@@ -1,11 +1,17 @@
 "use client";
+import ChatArea from "./components/ChatArea";
+import ChatsList from "./components/ChatsList";
 import Header from "./components/Header";
 import MessageUserModal from "./components/MessageUserModal";
 
 export default function Home() {
   return (
-    <div>
+    <div className="flex flex-col h-screen overflow-hidden">
       <Header />
+      <div className="flex flex-1 gap-4 text-gray-100 overflow-hidden">
+        <ChatsList />
+        <ChatArea />
+      </div>
       <MessageUserModal />
     </div>
   );
